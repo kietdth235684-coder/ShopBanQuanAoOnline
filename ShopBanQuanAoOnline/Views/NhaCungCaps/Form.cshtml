@@ -1,0 +1,18 @@
+@model NhaCungCap
+@{ ViewData["Title"] = Model.MaNcc == 0 ? "Thêm nhà cung cấp" : "Sửa nhà cung cấp"; }
+<div class="page-title"><h1>@ViewData["Title"]</h1><a asp-action="Index" class="btn btn-light">← Danh sách</a></div>
+<div class="card"><div class="card-body">
+<form asp-action="Save" method="post">
+    <input type="hidden" asp-for="MaNcc" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-6 mb-3"><label asp-for="Ten" class="form-label"></label><input asp-for="Ten" class="form-control" /></div>
+        <div class="col-md-3 mb-3"><label asp-for="DienThoai" class="form-label"></label><input asp-for="DienThoai" class="form-control" /></div>
+        <div class="col-md-3 mb-3"><label asp-for="Email" class="form-label"></label><input asp-for="Email" class="form-control" /></div>
+        <div class="col-md-6 mb-3"><label asp-for="DiaChi" class="form-label"></label><input asp-for="DiaChi" class="form-control" /></div>
+        <div class="col-md-6 mb-3"><label asp-for="GhiChu" class="form-label"></label><input asp-for="GhiChu" class="form-control" /></div>
+        <div class="col-12 mb-3"><div class="form-check form-switch"><input asp-for="TrangThai" class="form-check-input" /><label asp-for="TrangThai" class="form-check-label"></label></div></div>
+    </div>
+    <button class="btn btn-primary">Lưu</button>
+</form>
+</div></div>

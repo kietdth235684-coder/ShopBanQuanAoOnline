@@ -1,0 +1,42 @@
+@model List<CartItem>
+@{
+    ViewData["Title"] = "Đặt hàng";
+    var kh = ViewBag.khachhang as Khachhang;
+    var dc = ViewBag.DiaChi as Diachi;
+    int tong = Model.Sum(i => i.ThanhTien);
+}
+<h1 class="h4 fw-bold mb-3">Đặt hàng – thanh toán khi nhận hàng (COD)</h1>
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="khung">
+            <h2 class="h6 fw-bold mb-3">Thông tin nhận hàng</h2>
+            <form asp-action="DatHang" method="post" id="formDatHang">
+                <div class="mb-3"><label class="form-label">Họ tên người nhận</label><input name="hoten" class="form-control" value="@kh?.Ten" maxlength="100" required /></div>
+                <div class="mb-3"><label class="form-label">Số điện thoại</label><input name="dienthoai" class="form-control" value="@kh?.DienThoai" pattern="0[0-9]{9,10}" title="10–11 số, bắt đầu bằng 0" required /></div>
+                <div class="mb-3"><label class="form-label">Địa chỉ nhận hàng</label><textarea name="diachi" class="form-control" rows="2" maxlength="255" required>@dc?.DayDu</textarea></div>
+                <div class="mb-3"><label class="form-label">Ghi chú cho cửa hàng</label><input name="ghichu" class="form-control" maxlength="255" placeholder="VD: giao giờ hành chính" /></div>
+                <div class="alert alert-light border small mb-3">
+                    <b>Quy trình đơn COD:</b> Chờ xác nhận → Cửa hàng xác nhận → Đang giao → Giao thành công & thu tiền → Hoàn tất (phát hành hóa đơn).
+                    Bạn có thể hủy đơn khi đơn còn ở trạng thái <b>Chờ xác nhận</b>.
+                </div>
+                <div class="d-grid"><button class="btn btn-dark btn-lg"><i class="bi bi-check2-circle"></i> Đặt hàng (@tong.ToString("N0")đ)</button></div>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="khung">
+            <h2 class="h6 fw-bold mb-3">Đơn hàng (@Model.Sum(i => i.SoLuong) sản phẩm)</h2>
+            @foreach (var i in Model)
+            {
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex align-items-center gap-2"><img src="~/images/@i.HinhAnh" width="44" height="52" class="rounded" style="object-fit:cover" alt="" />
+                        <div class="small"><div class="fw-semibold">@i.Ten</div><div class="text-muted">@i.KichCo / @i.MauSac × @i.SoLuong</div></div></div>
+                    <div class="small fw-semibold">@i.ThanhTien.ToString("N0")đ</div>
+                </div>
+            }
+            <hr />
+            <div class="d-flex justify-content-between"><span>Tổng thanh toán khi nhận hàng</span><b class="gia fs-5">@tong.ToString("N0")đ</b></div>
+            <a asp-action="ViewCart" class="small">Sửa giỏ hàng</a>
+        </div>
+    </div>
+</div>

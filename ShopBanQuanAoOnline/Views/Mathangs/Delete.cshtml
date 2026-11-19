@@ -1,0 +1,19 @@
+@model Mathang
+@{ ViewData["Title"] = "Xóa sản phẩm"; bool coGD = (bool)ViewBag.CoGiaoDich; }
+<div class="page-title"><h1>Xóa sản phẩm</h1></div>
+<div class="card"><div class="card-body">
+    <h5>@Model.Ten <small class="text-muted">(#@Model.MaMh – @Model.MaDmNavigation?.Ten)</small></h5>
+    @if (coGD)
+    {
+        <div class="alert alert-warning">Sản phẩm đã có nhập hàng / bán hàng / đơn hàng / đánh giá. Để giữ lịch sử, hệ thống sẽ <b>chuyển sang Ngừng bán</b> thay vì xóa.</div>
+    }
+    else
+    {
+        <div class="alert alert-danger">Sản phẩm và các biến thể size/màu sẽ bị xóa vĩnh viễn.</div>
+    }
+    <form asp-action="Delete" method="post">
+        <input type="hidden" name="id" value="@Model.MaMh" />
+        <button class="btn btn-danger">@(coGD ? "Chuyển sang ngừng bán" : "Xác nhận xóa")</button>
+        <a asp-action="Details" asp-route-id="@Model.MaMh" class="btn btn-light">Hủy</a>
+    </form>
+</div></div>

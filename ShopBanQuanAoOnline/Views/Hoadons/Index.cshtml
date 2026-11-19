@@ -1,0 +1,26 @@
+@model List<Hoadon>
+@{ ViewData["Title"] = "Hóa đơn"; int? loai = ViewBag.Loai; }
+<div class="page-title"><h1>Tra cứu hóa đơn bán hàng</h1><a asp-controller="BanHang" asp-action="Index" class="btn btn-primary"><i class="bi bi-cash-coin"></i> Bán tại quầy</a></div>
+<div class="card mb-3"><div class="card-body"><form method="get" class="row g-2 align-items-end">
+    <div class="col-md-3"><label class="form-label">Mã HĐ / mã đơn / SĐT / tên khách</label><input name="tukhoa" value="@ViewBag.tukhoa" class="form-control" /></div>
+    <div class="col-auto"><label class="form-label">Loại</label><select name="loai" class="form-select">
+        <option value="">Tất cả</option>
+        <option value="0" selected="@(loai == 0)">Tại quầy</option>
+        <option value="1" selected="@(loai == 1)">Đơn COD</option></select></div>
+    <div class="col-auto"><label class="form-label">Từ ngày</label><input type="date" name="tuNgay" value="@ViewBag.TuNgay" class="form-control" /></div>
+    <div class="col-auto"><label class="form-label">Đến ngày</label><input type="date" name="denNgay" value="@ViewBag.DenNgay" class="form-control" /></div>
+    <div class="col-auto"><button class="btn btn-secondary">Tra cứu</button></div>
+</form></div></div>
+<div class="card"><div class="table-responsive"><table class="table table-hover mb-0">
+<thead><tr><th>Mã HĐ</th><th>Ngày lập</th><th>Loại</th><th>Khách hàng</th><th>Nhân viên</th><th class="text-end">Tổng tiền</th><th>Trạng thái</th><th></th></tr></thead><tbody>
+@foreach (var h in Model)
+{
+    <tr><td class="fw-semibold">HD@h.MaHd</td><td>@h.Ngay?.ToString("dd/MM/yyyy HH:mm")</td>
+        <td>@HangSo.LoaiHoaDon.Ten(h.LoaiHd) @if (h.MaDh.HasValue) { <small class="text-muted">(DH@h.MaDh)</small> }</td>
+        <td>@(h.MaKhNavigation?.Ten ?? "Khách lẻ")</td><td>@h.MaNvNavigation?.Ten</td>
+        <td class="text-end money">@h.TongTien?.ToString("N0") đ</td>
+        <td>@if (h.TrangThai == HangSo.TrangThaiHoaDon.HoanTat) { <span class="badge bg-success">Hoàn tất</span> } else { <span class="badge bg-secondary" title="Dữ liệu trước khi nâng cấp, không tính doanh thu">Dữ liệu cũ</span> }</td>
+        <td><a asp-action="Details" asp-route-id="@h.MaHd" class="btn btn-sm btn-outline-primary">Xem / in</a></td></tr>
+}
+@if (Model.Count == 0) { <tr><td colspan="8" class="text-center text-muted py-3">Không có hóa đơn.</td></tr> }
+</tbody></table></div></div>

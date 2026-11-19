@@ -1,0 +1,16 @@
+@model Nhanvien
+@{ ViewData["Title"] = Model.Ten; var cc = (List<ChamCong>)ViewBag.ChamCong; }
+<div class="page-title"><h1>@Model.Ten</h1><div><a asp-action="Edit" asp-route-id="@Model.MaNv" class="btn btn-outline-primary">Sửa</a> <a asp-action="Index" class="btn btn-light">← Danh sách</a></div></div>
+<div class="row">
+<div class="col-md-5 mb-3"><div class="card"><div class="card-body"><dl class="row mb-0">
+    <dt class="col-5">Email</dt><dd class="col-7">@Model.Email</dd>
+    <dt class="col-5">Điện thoại</dt><dd class="col-7">@Model.DienThoai</dd>
+    <dt class="col-5">Chức vụ</dt><dd class="col-7">@Model.MaCvNavigation?.Ten</dd>
+    <dt class="col-5">Vai trò</dt><dd class="col-7">@HangSo.VaiTro.Ten(Model.VaiTro)</dd>
+    <dt class="col-5">Trạng thái</dt><dd class="col-7">@(Model.TrangThai ? "Hoạt động" : "Đã khóa")</dd>
+</dl></div></div></div>
+<div class="col-md-7 mb-3"><div class="card"><div class="card-header"><h5 class="card-title mb-0">Chấm công tháng này: @cc.Count ngày, @cc.Sum(c => c.SoGio).ToString("0.##") giờ</h5></div>
+<table class="table table-sm mb-0"><thead><tr><th>Ngày</th><th>Vào</th><th>Ra</th><th class="text-end">Số giờ</th></tr></thead><tbody>
+@foreach (var c in cc) { <tr><td>@c.Ngay.ToString("dd/MM/yyyy")</td><td>@c.GioVao.ToString("HH:mm")</td><td>@(c.GioRa?.ToString("HH:mm") ?? "—")</td><td class="text-end">@c.SoGio</td></tr> }
+</tbody></table></div></div>
+</div>

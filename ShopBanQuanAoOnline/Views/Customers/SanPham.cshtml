@@ -1,0 +1,55 @@
+@model List<Mathang>
+@{
+    ViewData["Title"] = ViewBag.tendm ?? "Sản phẩm";
+    var loc = (LocSanPham)ViewBag.Loc;
+    var sizes = (List<string>)ViewBag.DsSize;
+    var maus = (List<string>)ViewBag.DsMau;
+    int trang = ViewBag.Trang, soTrang = ViewBag.SoTrang;
+    var dms = ViewBag.danhmuc as List<Danhmuc> ?? new();
+    int? maDm = loc.MaDm; string? size = loc.Size; string? mau = loc.Mau; string? sapXep = loc.SapXep;
+}
+<nav aria-label="breadcrumb"><ol class="breadcrumb small"><li class="breadcrumb-item"><a asp-action="Index">Trang chủ</a></li><li class="breadcrumb-item active">@ViewData["Title"]</li></ol></nav>
+<div class="row g-4">
+    <aside class="col-lg-3">
+        <form method="get" asp-action="SanPham" class="bo-loc">
+            <div class="mb-3"><label class="form-label">Từ khóa</label><input name="tukhoa" value="@loc.TuKhoa" class="form-control form-control-sm" /></div>
+            <div class="mb-3"><label class="form-label">Danh mục</label>
+                <select name="maDm" class="form-select form-select-sm"><option value="">Tất cả</option>
+                    @foreach (var d in dms) { <option value="@d.MaDm" selected="@(maDm == d.MaDm)">@d.Ten</option> }</select></div>
+            <div class="mb-3"><label class="form-label">Kích cỡ</label>
+                <select name="size" class="form-select form-select-sm"><option value="">Tất cả</option>
+                    @foreach (var s in sizes) { <option selected="@(size == s)">@s</option> }</select></div>
+            <div class="mb-3"><label class="form-label">Màu sắc</label>
+                <select name="mau" class="form-select form-select-sm"><option value="">Tất cả</option>
+                    @foreach (var c in maus) { <option selected="@(mau == c)">@c</option> }</select></div>
+            <div class="mb-3"><label class="form-label">Khoảng giá (đ)</label>
+                <div class="d-flex gap-1"><input type="number" min="0" step="10000" name="giaTu" value="@loc.GiaTu" class="form-control form-control-sm" placeholder="Từ" /><input type="number" min="0" step="10000" name="giaDen" value="@loc.GiaDen" class="form-control form-control-sm" placeholder="Đến" /></div></div>
+            <input type="hidden" name="sapXep" value="@sapXep" />
+            <div class="d-grid gap-2"><button class="btn btn-dark btn-sm">Lọc sản phẩm</button><a asp-action="SanPham" class="btn btn-link btn-sm">Xóa bộ lọc</a></div>
+        </form>
+    </aside>
+    <section class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <h1 class="h4 mb-0">@ViewData["Title"] <small class="text-muted fs-6">(@ViewBag.Tong sản phẩm)</small></h1>
+            <div class="small">Sắp xếp:
+                @foreach (var (ma, ten) in new[] { ("", "Mới nhất"), ("ban-chay", "Bán chạy"), ("gia-tang", "Giá tăng dần"), ("gia-giam", "Giá giảm dần") })
+                {
+                    <a class="chip @((sapXep ?? "") == ma ? "active" : "")" asp-action="SanPham" asp-route-maDm="@maDm" asp-route-tukhoa="@loc.TuKhoa" asp-route-size="@size" asp-route-mau="@mau" asp-route-giaTu="@loc.GiaTu" asp-route-giaDen="@loc.GiaDen" asp-route-sapXep="@ma">@ten</a>
+                }
+            </div>
+        </div>
+        <div class="row row-cols-2 row-cols-md-3 g-3">
+            @foreach (var m in Model) { <partial name="_TheSanPham" model="m" /> }
+        </div>
+        @if (Model.Count == 0) { <div class="alert alert-light border">Không tìm thấy sản phẩm phù hợp. Thử bỏ bớt điều kiện lọc.</div> }
+        @if (soTrang > 1)
+        {
+            <nav class="mt-4"><ul class="pagination justify-content-center">
+                @for (int p = 1; p <= soTrang; p++)
+                {
+                    <li class="page-item @(p == trang ? "active" : "")"><a class="page-link" asp-action="SanPham" asp-route-maDm="@maDm" asp-route-tukhoa="@loc.TuKhoa" asp-route-size="@size" asp-route-mau="@mau" asp-route-giaTu="@loc.GiaTu" asp-route-giaDen="@loc.GiaDen" asp-route-sapXep="@sapXep" asp-route-trang="@p">@p</a></li>
+                }
+            </ul></nav>
+        }
+    </section>
+</div>

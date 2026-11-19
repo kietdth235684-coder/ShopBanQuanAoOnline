@@ -1,0 +1,22 @@
+@model List<BienThe>
+@{ ViewData["Title"] = "Kiểm kê kho"; }
+<div class="page-title"><h1>Kiểm kê kho</h1><a asp-action="Index" class="btn btn-light">← Danh sách</a></div>
+<div class="card mb-3"><div class="card-body"><form method="get" class="d-flex gap-2 align-items-end" style="max-width:480px">
+    <div class="flex-grow-1"><label class="form-label">Kiểm kê theo danh mục</label><select name="maDm" asp-items="ViewBag.DanhMuc" class="form-select"><option value="">Tất cả sản phẩm</option></select></div>
+    <button class="btn btn-secondary">Chọn</button></form></div></div>
+<form asp-action="Create" method="post">
+<input type="hidden" name="maDm" value="@ViewBag.MaDm" />
+<div class="card"><div class="card-body">
+    <p class="small text-muted mb-2">Nhập số lượng đếm thực tế. Để trống những dòng không kiểm. Khi lưu, hệ thống đọc lại tồn hiện tại và điều chỉnh theo chênh lệch, ghi thẻ kho.</p>
+    <div class="table-responsive"><table class="table table-sm align-middle">
+    <thead><tr><th>Sản phẩm</th><th>Size / Màu</th><th class="text-end">Tồn hệ thống</th><th style="width:160px">Thực tế</th></tr></thead><tbody>
+    @foreach (var b in Model)
+    {
+        <tr><td>@b.MaMhNavigation?.Ten @if (!b.TrangThai) { <span class="badge bg-secondary">ngừng bán</span> }</td><td>@b.TenBienThe</td><td class="text-end">@b.SoLuongTon</td>
+            <td><input type="hidden" name="maBt" value="@b.MaBt" /><input type="number" min="0" name="thucTe" class="form-control form-control-sm" placeholder="@b.SoLuongTon" /></td></tr>
+    }
+    </tbody></table></div>
+    <div class="row"><div class="col-md-6 mb-3"><label class="form-label">Ghi chú</label><input name="ghiChu" maxlength="255" class="form-control" /></div></div>
+    <button class="btn btn-primary"><i class="bi bi-save"></i> Lưu kiểm kê & điều chỉnh tồn</button>
+</div></div>
+</form>

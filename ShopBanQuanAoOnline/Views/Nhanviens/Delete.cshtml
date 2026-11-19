@@ -1,0 +1,10 @@
+@model Nhanvien
+@{ ViewData["Title"] = "Xóa nhân viên"; bool ls = (bool)ViewBag.CoLichSu; }
+<div class="page-title"><h1>Xóa nhân viên</h1></div>
+<div class="card"><div class="card-body">
+    <h5>@Model.Ten (@Model.Email)</h5>
+    @if (ls) { <div class="alert alert-warning">Nhân viên đã có lịch sử thao tác (hóa đơn, phiếu kho, chấm công...). Hệ thống sẽ <b>khóa tài khoản</b> thay vì xóa để giữ lịch sử.</div> }
+    else { <div class="alert alert-danger">Tài khoản sẽ bị xóa vĩnh viễn.</div> }
+    <form asp-action="Delete" method="post"><input type="hidden" name="id" value="@Model.MaNv" />
+        <button class="btn btn-danger">@(ls ? "Khóa tài khoản" : "Xác nhận xóa")</button> <a asp-action="Index" class="btn btn-light">Hủy</a></form>
+</div></div>

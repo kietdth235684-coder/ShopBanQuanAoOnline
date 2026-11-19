@@ -1,0 +1,48 @@
+@model IEnumerable<Mathang>
+@{ ViewData["Title"] = "Sản phẩm"; bool chu = (bool)(ViewData["LaChuCuaHang"] ?? false); }
+<div class="page-title">
+    <h1>Sản phẩm</h1>
+    @if (chu) { <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Thêm sản phẩm</a> }
+</div>
+<div class="card mb-3"><div class="card-body">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-3"><label class="form-label">Tên hoặc mã SP</label><input name="tukhoa" value="@ViewBag.tukhoa" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Danh mục</label>
+            <select name="maDm" asp-items="ViewBag.MaDmList" class="form-select"><option value="">Tất cả</option></select></div>
+        <div class="col-md-2"><label class="form-label">Giá từ</label><input type="number" min="0" name="giaTu" value="@ViewBag.giaTu" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Giá đến</label><input type="number" min="0" name="giaDen" value="@ViewBag.giaDen" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Trạng thái</label>
+            <select name="dangBan" class="form-select">
+                <option value="">Tất cả</option>
+                <option value="true" selected="@(ViewBag.dangBan == true)">Đang bán</option>
+                <option value="false" selected="@(ViewBag.dangBan == false)">Ngừng bán</option>
+            </select></div>
+        <div class="col-md-1 d-grid"><button class="btn btn-secondary"><i class="bi bi-search"></i></button></div>
+    </form>
+</div></div>
+<div class="card"><div class="table-responsive">
+<table class="table table-hover mb-0">
+    <thead><tr><th>Mã</th><th></th><th>Tên sản phẩm</th><th>Danh mục</th><th class="text-end">Giá bán</th><th class="text-end">Giá nhập TK</th><th>Size / màu</th><th class="text-end">Tồn</th><th>Trạng thái</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var m in Model)
+    {
+        <tr>
+            <td>@m.MaMh</td>
+            <td>@if (!string.IsNullOrEmpty(m.HinhAnh)) { <img src="~/images/@m.HinhAnh" class="thumb" alt="" /> }</td>
+            <td><a asp-action="Details" asp-route-id="@m.MaMh" class="fw-semibold">@m.Ten</a></td>
+            <td>@m.MaDmNavigation?.Ten</td>
+            <td class="text-end money">@m.GiaBan?.ToString("N0")</td>
+            <td class="text-end money text-muted">@m.GiaNhap.ToString("N0")</td>
+            <td class="small">@string.Join(", ", m.BienThes.Where(b => b.TrangThai).Select(b => b.TenBienThe))</td>
+            <td class="text-end">@m.SoLuong</td>
+            <td>@if (m.TrangThai) { <span class="badge bg-success">Đang bán</span> } else { <span class="badge bg-secondary">Ngừng bán</span> }</td>
+            <td class="text-nowrap">
+                <a asp-action="Details" asp-route-id="@m.MaMh" class="btn btn-sm btn-outline-primary">Chi tiết</a>
+                @if (chu) { <a asp-action="Edit" asp-route-id="@m.MaMh" class="btn btn-sm btn-outline-secondary">Sửa</a> }
+            </td>
+        </tr>
+    }
+    @if (!Model.Any()) { <tr><td colspan="10" class="text-center text-muted py-4">Không có sản phẩm phù hợp.</td></tr> }
+    </tbody>
+</table>
+</div></div>

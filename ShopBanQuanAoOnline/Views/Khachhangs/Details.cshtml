@@ -1,0 +1,23 @@
+@model Khachhang
+@{ ViewData["Title"] = Model.Ten; bool chu = (bool)(ViewData["LaChuCuaHang"] ?? false); }
+<div class="page-title"><h1>@Model.Ten</h1><div><a asp-action="Edit" asp-route-id="@Model.MaKh" class="btn btn-outline-primary">Sửa</a> @if (chu) { <a asp-action="Delete" asp-route-id="@Model.MaKh" class="btn btn-outline-danger">Xóa</a> } <a asp-action="Index" class="btn btn-light">← Danh sách</a></div></div>
+<div class="row">
+<div class="col-lg-4 mb-3"><div class="card"><div class="card-body small">
+    <p class="mb-1"><b>Email:</b> @Model.Email</p><p class="mb-1"><b>Điện thoại:</b> @Model.DienThoai</p>
+    <p class="mb-1"><b>Địa chỉ:</b></p>
+    <ul class="mb-0">@foreach (var d in Model.Diachis) { <li>@d.DayDu @if (d.MacDinh == 1) { <span class="badge bg-info">mặc định</span> }</li> }</ul>
+</div></div></div>
+<div class="col-lg-8">
+    <div class="card mb-3"><div class="card-header"><h5 class="card-title mb-0">Đơn hàng COD</h5></div>
+    <table class="table table-sm mb-0"><thead><tr><th>Mã</th><th>Ngày đặt</th><th class="text-end">Tổng</th><th>Trạng thái</th></tr></thead><tbody>
+    @foreach (var d in Model.DonHangs.OrderByDescending(x => x.NgayDat))
+    { <tr><td><a asp-controller="DonHangs" asp-action="Details" asp-route-id="@d.MaDh">DH@d.MaDh</a></td><td>@d.NgayDat.ToString("dd/MM/yyyy")</td><td class="text-end">@d.TongTien.ToString("N0")</td>
+        <td><span class="badge bg-@HangSo.TrangThaiDon.Mau(d.TrangThai)">@HangSo.TrangThaiDon.Ten(d.TrangThai)</span></td></tr> }
+    </tbody></table></div>
+    <div class="card"><div class="card-header"><h5 class="card-title mb-0">Hóa đơn</h5></div>
+    <table class="table table-sm mb-0"><thead><tr><th>Mã</th><th>Ngày</th><th>Loại</th><th class="text-end">Tổng</th></tr></thead><tbody>
+    @foreach (var h in Model.Hoadons.OrderByDescending(x => x.Ngay))
+    { <tr><td><a asp-controller="Hoadons" asp-action="Details" asp-route-id="@h.MaHd">HD@h.MaHd</a></td><td>@h.Ngay?.ToString("dd/MM/yyyy")</td><td>@HangSo.LoaiHoaDon.Ten(h.LoaiHd)</td><td class="text-end">@h.TongTien?.ToString("N0")</td></tr> }
+    </tbody></table></div>
+</div>
+</div>

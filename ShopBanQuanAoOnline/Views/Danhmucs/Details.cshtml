@@ -1,0 +1,3 @@
+@model Danhmuc
+@{ ViewData["Title"] = Model.Ten; }
+<div class="page-title"><h1>Danh mục: @Model.Ten</h1><div><a asp-controller="Mathangs" asp-action="Index" asp-route-maDm="@Model.MaDm" class="btn btn-outline-primary">Xem sản phẩm</a> <a asp-action="Index" class="btn btn-light">← Danh sách</a></div></div>

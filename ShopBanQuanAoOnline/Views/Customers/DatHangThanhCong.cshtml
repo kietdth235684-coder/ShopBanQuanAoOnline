@@ -1,0 +1,10 @@
+@model DonHang
+@{ ViewData["Title"] = "Đặt hàng thành công"; }
+<div class="text-center py-5">
+    <i class="bi bi-check-circle-fill text-success" style="font-size:4rem"></i>
+    <h1 class="h3 fw-bold mt-3">Đặt hàng thành công!</h1>
+    <p>Mã đơn hàng của bạn: <b>DH@Model.MaDh</b> – tổng tiền <b>@Model.TongTien.ToString("N0")đ</b> (thanh toán khi nhận hàng).</p>
+    <p class="text-muted">Đơn đang <b>chờ cửa hàng xác nhận</b>. Bạn có thể theo dõi hoặc hủy đơn trong mục Đơn hàng của tôi.</p>
+    <a asp-action="ChiTietDonHang" asp-route-id="@Model.MaDh" class="btn btn-dark">Xem đơn hàng</a>
+    <a asp-action="SanPham" class="btn btn-outline-dark">Tiếp tục mua sắm</a>
+</div>

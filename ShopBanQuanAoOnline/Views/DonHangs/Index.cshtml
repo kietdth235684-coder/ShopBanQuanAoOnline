@@ -1,0 +1,33 @@
+@model List<DonHang>
+@{
+    ViewData["Title"] = "Đơn COD";
+    var dem = (Dictionary<int, int>)ViewBag.DemTheoTrangThai;
+    int? tt = ViewBag.TrangThai;
+}
+<div class="page-title"><h1>Đơn đặt hàng COD từ website</h1></div>
+<ul class="nav nav-pills mb-3 flex-wrap">
+    <li class="nav-item"><a class="nav-link @(tt == null ? "active" : "")" asp-action="Index">Tất cả</a></li>
+    @foreach (var s in HangSo.TrangThaiDon.TatCa)
+    {
+        <li class="nav-item"><a class="nav-link @(tt == s ? "active" : "")" asp-action="Index" asp-route-trangThai="@s">@HangSo.TrangThaiDon.Ten(s) <span class="badge bg-@HangSo.TrangThaiDon.Mau(s)">@dem.GetValueOrDefault(s)</span></a></li>
+    }
+</ul>
+<div class="card mb-3"><div class="card-body"><form method="get" class="row g-2 align-items-end">
+    <input type="hidden" name="trangThai" value="@tt" />
+    <div class="col-md-3"><label class="form-label">Mã đơn / SĐT / tên người nhận</label><input name="tukhoa" value="@ViewBag.tukhoa" class="form-control" /></div>
+    <div class="col-auto"><label class="form-label">Từ ngày</label><input type="date" name="tuNgay" value="@ViewBag.TuNgay" class="form-control" /></div>
+    <div class="col-auto"><label class="form-label">Đến ngày</label><input type="date" name="denNgay" value="@ViewBag.DenNgay" class="form-control" /></div>
+    <div class="col-auto"><button class="btn btn-secondary">Tra cứu</button></div>
+</form></div></div>
+<div class="card"><div class="table-responsive"><table class="table table-hover mb-0">
+<thead><tr><th>Mã đơn</th><th>Ngày đặt</th><th>Người nhận</th><th>SĐT</th><th class="text-end">Tổng tiền</th><th>Trạng thái</th><th>Thu tiền</th><th></th></tr></thead><tbody>
+@foreach (var d in Model)
+{
+    <tr><td class="fw-semibold">DH@d.MaDh</td><td>@d.NgayDat.ToString("dd/MM/yyyy HH:mm")</td><td>@d.HoTenNhan</td><td>@d.DienThoaiNhan</td>
+        <td class="text-end money">@d.TongTien.ToString("N0") đ</td>
+        <td><span class="badge bg-@HangSo.TrangThaiDon.Mau(d.TrangThai)">@HangSo.TrangThaiDon.Ten(d.TrangThai)</span></td>
+        <td>@HangSo.ThanhToan.Ten(d.ThanhToan)</td>
+        <td><a asp-action="Details" asp-route-id="@d.MaDh" class="btn btn-sm btn-outline-primary">Xử lý</a></td></tr>
+}
+@if (Model.Count == 0) { <tr><td colspan="8" class="text-center text-muted py-3">Không có đơn hàng.</td></tr> }
+</tbody></table></div></div>

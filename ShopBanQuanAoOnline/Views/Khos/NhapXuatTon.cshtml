@@ -1,0 +1,18 @@
+@model List<DongNhapXuatTon>
+@{ ViewData["Title"] = "Nhập – xuất – tồn"; }
+<div class="page-title"><h1>Báo cáo nhập – xuất – tồn</h1><button onclick="window.print()" class="btn btn-outline-secondary no-print"><i class="bi bi-printer"></i> In</button></div>
+<div class="card mb-3 no-print"><div class="card-body"><form method="get" class="row g-2 align-items-end">
+    <div class="col-auto"><label class="form-label">Từ ngày</label><input type="date" name="tuNgay" value="@ViewBag.TuNgay" class="form-control" /></div>
+    <div class="col-auto"><label class="form-label">Đến ngày</label><input type="date" name="denNgay" value="@ViewBag.DenNgay" class="form-control" /></div>
+    <div class="col-auto"><label class="form-label">Danh mục</label><select name="maDm" asp-items="ViewBag.DanhMuc" class="form-select"><option value="">Tất cả</option></select></div>
+    <div class="col-auto"><button class="btn btn-primary">Xem báo cáo</button></div>
+</form></div></div>
+<p class="small text-muted">Kỳ báo cáo: @ViewBag.TuNgay → @ViewBag.DenNgay. Số liệu tính từ thẻ kho. Tồn cuối = Tồn đầu + Nhập − Xuất bán − Xuất khác ± Đổi trả ± Kiểm kê. Xuất bán COD đã trừ phần hàng hoàn về do hủy/giao thất bại.</p>
+<div class="card"><div class="table-responsive"><table class="table table-sm table-bordered mb-0">
+<thead><tr><th>Sản phẩm</th><th>Size / Màu</th><th class="text-end">Tồn đầu</th><th class="text-end">Nhập</th><th class="text-end">Xuất bán</th><th class="text-end">Xuất khác</th><th class="text-end">Đổi trả</th><th class="text-end">Kiểm kê</th><th class="text-end">Tồn cuối</th></tr></thead>
+<tbody>
+@foreach (var d in Model)
+{ <tr><td>@d.TenSanPham</td><td>@d.BienThe</td><td class="text-end">@d.TonDau</td><td class="text-end">@d.Nhap</td><td class="text-end">@d.XuatBan</td><td class="text-end">@d.XuatKhac</td><td class="text-end">@d.DoiTra</td><td class="text-end">@d.KiemKe</td><td class="text-end fw-bold">@d.TonCuoi</td></tr> }
+</tbody>
+<tfoot><tr class="fw-bold"><td colspan="2">Tổng</td><td class="text-end">@Model.Sum(x => x.TonDau)</td><td class="text-end">@Model.Sum(x => x.Nhap)</td><td class="text-end">@Model.Sum(x => x.XuatBan)</td><td class="text-end">@Model.Sum(x => x.XuatKhac)</td><td class="text-end">@Model.Sum(x => x.DoiTra)</td><td class="text-end">@Model.Sum(x => x.KiemKe)</td><td class="text-end">@Model.Sum(x => x.TonCuoi)</td></tr></tfoot>
+</table></div></div>
