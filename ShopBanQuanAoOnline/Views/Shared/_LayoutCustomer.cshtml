@@ -1,0 +1,115 @@
+@{
+    var kh = ViewBag.khachhang as Khachhang;
+    var dms = ViewBag.danhmuc as List<Danhmuc> ?? new List<Danhmuc>();
+    var ch = ViewBag.cuahang as Cuahang;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " – " : "")MIKA – Thời trang nam nữ</title>
+    <link rel="icon" type="image/x-icon" href="~/assets/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/shop.css" rel="stylesheet" asp-append-version="true" />
+</head>
+<body id="top">
+    <div class="topbar small">
+        <div class="container d-flex justify-content-between">
+            <span><i class="bi bi-truck"></i> Giao hàng toàn quốc – thanh toán khi nhận hàng (COD)</span>
+            <span class="d-none d-md-inline"><i class="bi bi-telephone"></i> @(ch?.DienThoai ?? "0363134931")</span>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand brand" asp-controller="Customers" asp-action="Index">MIKA<span>.</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuChinh" aria-label="Menu"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="menuChinh">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+                    <li class="nav-item"><a class="nav-link" asp-controller="Customers" asp-action="Index">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Customers" asp-action="SanPham">Tất cả sản phẩm</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Danh mục</a>
+                        <ul class="dropdown-menu">
+                            @foreach (var d in dms)
+                            {
+                                <li><a class="dropdown-item" asp-controller="Customers" asp-action="SanPham" asp-route-maDm="@d.MaDm">@d.Ten</a></li>
+                            }
+                        </ul>
+                    </li>
+                </ul>
+                <form class="d-flex me-lg-3 my-2 my-lg-0 tim-kiem" asp-controller="Customers" asp-action="SanPham" method="get">
+                    <input type="search" name="tukhoa" class="form-control" placeholder="Tìm áo, quần..." value="@ViewBag.tukhoa" />
+                    <button class="btn btn-dark" type="submit" aria-label="Tìm"><i class="bi bi-search"></i></button>
+                </form>
+                <div class="d-flex align-items-center gap-2">
+                    @if (kh != null)
+                    {
+                        <div class="dropdown">
+                            <a class="btn btn-outline-dark dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="bi bi-person"></i> @kh.Ten</a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" asp-controller="Customers" asp-action="CustomerInfo"><i class="bi bi-person-gear"></i> Hồ sơ của tôi</a></li>
+                                <li><a class="dropdown-item" asp-controller="Customers" asp-action="DonHang"><i class="bi bi-box-seam"></i> Đơn hàng của tôi</a></li>
+                                <li><a class="dropdown-item" asp-controller="Customers" asp-action="LichSuMua"><i class="bi bi-clock-history"></i> Lịch sử mua hàng</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item text-danger" asp-controller="Customers" asp-action="Signout"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a asp-controller="Customers" asp-action="Login" class="btn btn-outline-dark"><i class="bi bi-person"></i> Đăng nhập</a>
+                    }
+                    <a asp-controller="Customers" asp-action="ViewCart" class="btn btn-dark position-relative">
+                        <i class="bi bi-bag"></i> Giỏ hàng
+                        <span class="badge bg-danger rounded-pill ms-1">@ViewData["solg"]</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    @RenderSection("Banner", required: false)
+
+    <main class="container py-4">
+        <partial name="_ThongBao" />
+        @RenderBody()
+    </main>
+
+    <footer class="footer-shop mt-5">
+        <div class="container py-5">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="brand text-white mb-2">MIKA<span>.</span></div>
+                    <p class="text-white-50 mb-0">Thời trang basic cho mỗi ngày. Mua trực tiếp tại cửa hàng hoặc đặt online, thanh toán khi nhận hàng.</p>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-white">Liên hệ</h6>
+                    <p class="mb-1"><i class="bi bi-geo-alt"></i> @(ch?.DiaChi ?? "Số 29, đường Ung Văn Khiêm, phường Long Xuyên")</p>
+                    <p class="mb-1"><i class="bi bi-telephone"></i> <a href="tel:@(ch?.DienThoai ?? "0363134931")">@(ch?.DienThoai ?? "0363134931")</a></p>
+                    <p class="mb-0"><i class="bi bi-envelope"></i> Mikafashionshop@gmail.com</p>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-white">Mua sắm</h6>
+                    <p class="mb-1"><a asp-controller="Customers" asp-action="SanPham">Tất cả sản phẩm</a></p>
+                    <p class="mb-1"><a asp-controller="Customers" asp-action="DonHang">Tra cứu đơn hàng</a></p>
+                    <p class="mb-0"><a asp-controller="TaiKhoan" asp-action="DangNhap">Đăng nhập nhân viên</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="text-center small py-3 border-top border-secondary text-white-50">© @DateTime.Now.Year Shop quần áo MIKA</div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('submit', function (e) {
+            var msg = e.target.getAttribute('data-confirm');
+            if (msg && !confirm(msg)) e.preventDefault();
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

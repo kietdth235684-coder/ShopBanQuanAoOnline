@@ -1,0 +1,11 @@
+@model List<PhieuXuat>
+@{ ViewData["Title"] = "Phiếu xuất"; }
+<div class="page-title"><h1>Phiếu xuất kho</h1><a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Lập phiếu xuất</a></div>
+<p class="text-muted small">Dùng cho hàng lỗi, trả nhà cung cấp, sử dụng nội bộ. Hàng bán (tại quầy, COD) được trừ kho tự động, không lập phiếu xuất.</p>
+<div class="card"><div class="table-responsive"><table class="table table-hover mb-0">
+<thead><tr><th>Số phiếu</th><th>Ngày xuất</th><th>Lý do</th><th>Người lập</th><th class="text-end">Số lượng</th><th></th></tr></thead><tbody>
+@foreach (var p in Model)
+{ <tr><td>PX@p.MaPx</td><td>@p.NgayXuat.ToString("dd/MM/yyyy HH:mm")</td><td>@p.LyDo</td><td>@p.MaNvNavigation?.Ten</td><td class="text-end">@p.CtPhieuXuats.Sum(c => c.SoLuong)</td>
+    <td><a asp-action="Details" asp-route-id="@p.MaPx" class="btn btn-sm btn-outline-primary">Xem</a></td></tr> }
+@if (Model.Count == 0) { <tr><td colspan="6" class="text-center text-muted py-3">Chưa có phiếu xuất.</td></tr> }
+</tbody></table></div></div>

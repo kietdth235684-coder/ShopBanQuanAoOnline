@@ -1,0 +1,12 @@
+@model PhieuDoiTra
+@{ ViewData["Title"] = "DT" + Model.MaPdt; }
+<div class="page-title"><h1>Phiếu đổi trả DT@Model.MaPdt</h1><div class="no-print"><button onclick="window.print()" class="btn btn-outline-secondary"><i class="bi bi-printer"></i> In</button> <a asp-action="Index" class="btn btn-light">← Danh sách</a></div></div>
+<div class="card"><div class="card-body">
+    <p><b>Hóa đơn:</b> <a asp-controller="Hoadons" asp-action="Details" asp-route-id="@Model.MaHd">HD@Model.MaHd</a> · <b>Ngày:</b> @Model.NgayLap.ToString("dd/MM/yyyy HH:mm") · <b>Nhân viên:</b> @Model.MaNvNavigation?.Ten</p>
+    <p><b>Lý do:</b> @Model.LyDo</p>
+    <table class="table table-bordered"><thead><tr><th>Sản phẩm</th><th>Size/Màu trả</th><th class="text-end">SL</th><th>Hình thức</th><th>Đổi sang</th><th>Nhập lại kho</th><th class="text-end">Tiền hoàn</th></tr></thead><tbody>
+    @foreach (var c in Model.CtDoiTras)
+    { <tr><td>@c.MaBtTraNavigation?.MaMhNavigation?.Ten</td><td>@c.MaBtTraNavigation?.TenBienThe</td><td class="text-end">@c.SoLuong</td><td>@(c.HinhThuc == CtDoiTra.Doi ? "Đổi" : "Trả")</td>
+        <td>@c.MaBtDoiNavigation?.TenBienThe</td><td>@(c.NhapLaiKho ? "Có" : "Không (hàng lỗi)")</td><td class="text-end">@c.TienHoan.ToString("N0")</td></tr> }
+    </tbody><tfoot><tr><th colspan="6" class="text-end">Tổng tiền hoàn cho khách</th><th class="text-end">@Model.TienHoan.ToString("N0") đ</th></tr></tfoot></table>
+</div></div>

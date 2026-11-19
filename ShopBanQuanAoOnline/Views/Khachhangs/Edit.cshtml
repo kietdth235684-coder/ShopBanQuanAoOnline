@@ -1,0 +1,14 @@
+@model Khachhang
+@{ ViewData["Title"] = "Sửa khách hàng"; }
+<div class="page-title"><h1>Sửa khách hàng #@Model.MaKh</h1><a asp-action="Details" asp-route-id="@Model.MaKh" class="btn btn-light">← Chi tiết</a></div>
+<div class="card"><div class="card-body" style="max-width:620px">
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="MaKh" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="mb-3"><label asp-for="Ten" class="form-label"></label><input asp-for="Ten" class="form-control" /></div>
+    <div class="mb-3"><label asp-for="Email" class="form-label"></label><input asp-for="Email" class="form-control" /></div>
+    <div class="mb-3"><label asp-for="DienThoai" class="form-label"></label><input asp-for="DienThoai" class="form-control" /></div>
+    <p class="small text-muted">Mật khẩu do khách tự quản lý trên website, quản trị không xem hoặc đặt mật khẩu khách.</p>
+    <button class="btn btn-primary">Lưu</button>
+</form>
+</div></div>

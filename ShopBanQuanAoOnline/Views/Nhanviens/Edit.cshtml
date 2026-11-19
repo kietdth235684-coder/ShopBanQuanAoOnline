@@ -1,0 +1,11 @@
+@model Nhanvien
+@{ ViewData["Title"] = "Sửa nhân viên"; }
+<div class="page-title"><h1>Sửa nhân viên #@Model.MaNv</h1><a asp-action="Index" class="btn btn-light">← Danh sách</a></div>
+<div class="card"><div class="card-body">
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="MaNv" />
+    <partial name="_Form" model="Model" />
+    <div class="row"><div class="col-md-6 mb-3"><label class="form-label">Đặt lại mật khẩu</label><input type="password" name="matKhauMoi" class="form-control" minlength="6" placeholder="Để trống nếu không đổi" /></div></div>
+    <button class="btn btn-primary">Lưu</button>
+</form>
+</div></div>

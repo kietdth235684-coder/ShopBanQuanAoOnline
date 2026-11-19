@@ -1,0 +1,73 @@
+@model Mathang
+@{ ViewData["Title"] = Model.Ten; bool chu = (bool)(ViewData["LaChuCuaHang"] ?? false); }
+<div class="page-title">
+    <h1>@Model.Ten <small class="text-muted fs-6">#@Model.MaMh</small></h1>
+    <div>
+        @if (chu)
+        {
+            <a asp-action="Edit" asp-route-id="@Model.MaMh" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Sửa</a>
+            <a asp-action="Delete" asp-route-id="@Model.MaMh" class="btn btn-outline-danger"><i class="bi bi-trash"></i> Xóa</a>
+        }
+        <a asp-action="Index" class="btn btn-light">← Danh sách</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-4 mb-3"><div class="card"><div class="card-body text-center">
+        @if (!string.IsNullOrEmpty(Model.HinhAnh)) { <img src="~/images/@Model.HinhAnh" class="img-fluid rounded" style="max-height:320px" alt="" /> }
+        else { <div class="text-muted py-5">Chưa có ảnh</div> }
+    </div></div></div>
+    <div class="col-lg-8 mb-3"><div class="card"><div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4">Danh mục</dt><dd class="col-sm-8">@Model.MaDmNavigation?.Ten</dd>
+            <dt class="col-sm-4">Giá bán</dt><dd class="col-sm-8 text-danger fw-bold">@Model.GiaBan?.ToString("N0") đ
+                @if (Model.GiaGoc > Model.GiaBan) { <s class="text-muted ms-2 fw-normal">@Model.GiaGoc?.ToString("N0") đ</s> }</dd>
+            <dt class="col-sm-4">Giá nhập tham khảo</dt><dd class="col-sm-8">@Model.GiaNhap.ToString("N0") đ</dd>
+            <dt class="col-sm-4">Tổng tồn kho</dt><dd class="col-sm-8">@Model.SoLuong</dd>
+            <dt class="col-sm-4">Trạng thái</dt><dd class="col-sm-8">@(Model.TrangThai ? "Đang bán" : "Ngừng bán")</dd>
+            <dt class="col-sm-4">Lượt xem / lượt mua</dt><dd class="col-sm-8">@(Model.LuotXem ?? 0) / @(Model.LuotMua ?? 0)</dd>
+            <dt class="col-sm-4">Đánh giá</dt><dd class="col-sm-8">@(((double)ViewBag.DiemTB).ToString("0.0")) ★ (@ViewBag.SoDanhGia lượt hiển thị)
+                <a asp-controller="DanhGias" asp-action="Index" asp-route-maMh="@Model.MaMh" class="ms-2 small">Quản lý</a></dd>
+            <dt class="col-sm-4">Mô tả</dt><dd class="col-sm-8">@Model.MoTa</dd>
+        </dl>
+    </div></div></div>
+</div>
+
+<div class="card">
+    <div class="card-header"><h5 class="card-title mb-0">Biến thể kích cỡ / màu sắc</h5></div>
+    <div class="table-responsive">
+    <table class="table mb-0">
+        <thead><tr><th>Mã BT</th><th>Kích cỡ</th><th>Màu sắc</th><th class="text-end">Tồn kho</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var b in Model.BienThes.OrderBy(x => x.KichCo).ThenBy(x => x.MauSac))
+        {
+            <tr>
+                <td>@b.MaBt</td><td>@b.KichCo</td><td>@b.MauSac</td>
+                <td class="text-end">@b.SoLuongTon</td>
+                <td>@if (b.TrangThai) { <span class="badge bg-success">Đang bán</span> } else { <span class="badge bg-secondary">Ngừng bán</span> }</td>
+                <td class="text-nowrap">
+                    <a asp-controller="Khos" asp-action="TheKho" asp-route-id="@b.MaBt" class="btn btn-sm btn-outline-secondary">Thẻ kho</a>
+                    @if (chu)
+                    {
+                        <form asp-action="DoiTrangThaiBienThe" method="post" class="d-inline"><input type="hidden" name="maBt" value="@b.MaBt" />
+                            <button class="btn btn-sm btn-outline-warning">@(b.TrangThai ? "Ngừng bán" : "Bán lại")</button></form>
+                        <form asp-action="XoaBienThe" method="post" class="d-inline" data-confirm="Xóa biến thể @b.TenBienThe?"><input type="hidden" name="maBt" value="@b.MaBt" />
+                            <button class="btn btn-sm btn-outline-danger">Xóa</button></form>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    </div>
+    @if (chu)
+    {
+        <div class="card-body border-top">
+            <form asp-action="ThemBienThe" method="post" class="row g-2 align-items-end">
+                <input type="hidden" name="maMh" value="@Model.MaMh" />
+                <div class="col-md-3"><label class="form-label">Kích cỡ</label><input name="kichCo" class="form-control" maxlength="20" required placeholder="VD: M hoặc 30" /></div>
+                <div class="col-md-3"><label class="form-label">Màu sắc</label><input name="mauSac" class="form-control" maxlength="30" required placeholder="VD: Đen" /></div>
+                <div class="col-md-3"><button class="btn btn-success"><i class="bi bi-plus"></i> Thêm biến thể</button></div>
+            </form>
+        </div>
+    }
+</div>

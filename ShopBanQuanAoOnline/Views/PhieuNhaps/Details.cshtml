@@ -1,0 +1,16 @@
+@model PhieuNhap
+@{ ViewData["Title"] = "PN" + Model.MaPn; }
+<div class="page-title"><h1>Phiếu nhập PN@Model.MaPn</h1><div class="no-print"><button onclick="window.print()" class="btn btn-outline-secondary"><i class="bi bi-printer"></i> In</button> <a asp-action="Index" class="btn btn-light">← Danh sách</a></div></div>
+<div class="card"><div class="card-body">
+    <div class="row mb-3">
+        <div class="col-md-4"><b>Ngày nhập:</b> @Model.NgayNhap.ToString("dd/MM/yyyy HH:mm")</div>
+        <div class="col-md-4"><b>Nhà cung cấp:</b> @Model.MaNccNavigation?.Ten</div>
+        <div class="col-md-4"><b>Người lập:</b> @Model.MaNvNavigation?.Ten</div>
+        @if (!string.IsNullOrEmpty(Model.GhiChu)) { <div class="col-12 mt-2"><b>Ghi chú:</b> @Model.GhiChu</div> }
+    </div>
+    <table class="table table-bordered"><thead><tr><th>#</th><th>Sản phẩm</th><th>Size / Màu</th><th class="text-end">SL</th><th class="text-end">Đơn giá nhập</th><th class="text-end">Thành tiền</th></tr></thead><tbody>
+    @{ int i = 1; }
+    @foreach (var c in Model.CtPhieuNhaps)
+    { <tr><td>@(i++)</td><td>@c.MaBtNavigation?.MaMhNavigation?.Ten</td><td>@c.MaBtNavigation?.TenBienThe</td><td class="text-end">@c.SoLuong</td><td class="text-end">@c.DonGiaNhap.ToString("N0")</td><td class="text-end">@c.ThanhTien.ToString("N0")</td></tr> }
+    </tbody><tfoot><tr><th colspan="5" class="text-end">Tổng tiền</th><th class="text-end">@Model.TongTien.ToString("N0") đ</th></tr></tfoot></table>
+</div></div>

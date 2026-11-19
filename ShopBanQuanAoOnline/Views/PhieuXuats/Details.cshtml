@@ -1,0 +1,10 @@
+@model PhieuXuat
+@{ ViewData["Title"] = "PX" + Model.MaPx; }
+<div class="page-title"><h1>Phiếu xuất PX@Model.MaPx</h1><div class="no-print"><button onclick="window.print()" class="btn btn-outline-secondary"><i class="bi bi-printer"></i> In</button> <a asp-action="Index" class="btn btn-light">← Danh sách</a></div></div>
+<div class="card"><div class="card-body">
+    <div class="row mb-3"><div class="col-md-4"><b>Ngày xuất:</b> @Model.NgayXuat.ToString("dd/MM/yyyy HH:mm")</div><div class="col-md-4"><b>Lý do:</b> @Model.LyDo</div><div class="col-md-4"><b>Người lập:</b> @Model.MaNvNavigation?.Ten</div>
+        @if (!string.IsNullOrEmpty(Model.GhiChu)) { <div class="col-12 mt-2"><b>Ghi chú:</b> @Model.GhiChu</div> }</div>
+    <table class="table table-bordered"><thead><tr><th>Sản phẩm</th><th>Size / Màu</th><th class="text-end">Số lượng</th></tr></thead><tbody>
+    @foreach (var c in Model.CtPhieuXuats) { <tr><td>@c.MaBtNavigation?.MaMhNavigation?.Ten</td><td>@c.MaBtNavigation?.TenBienThe</td><td class="text-end">@c.SoLuong</td></tr> }
+    </tbody></table>
+</div></div>

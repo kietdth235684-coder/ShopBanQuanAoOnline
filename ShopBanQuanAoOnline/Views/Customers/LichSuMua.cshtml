@@ -1,0 +1,22 @@
+@model List<Hoadon>
+@{ ViewData["Title"] = "Lịch sử mua hàng"; var daDg = (List<int>)ViewBag.DaDanhGia; }
+<h1 class="h4 fw-bold mb-1">Lịch sử mua hàng</h1>
+<p class="text-muted small">Gồm các giao dịch đã hoàn tất: đơn online đã giao & thanh toán, và hóa đơn mua tại cửa hàng có gắn tài khoản của bạn.</p>
+@foreach (var h in Model)
+{
+    <div class="khung mb-3">
+        <div class="d-flex justify-content-between flex-wrap gap-2 mb-2">
+            <div><b>HD@h.MaHd</b> · @h.Ngay?.ToString("dd/MM/yyyy HH:mm") · @HangSo.LoaiHoaDon.Ten(h.LoaiHd)</div>
+            <div><b class="gia">@h.TongTien?.ToString("N0")đ</b> <a asp-action="HoaDon" asp-route-id="@h.MaHd" class="btn btn-sm btn-outline-dark ms-2">Xem hóa đơn</a></div>
+        </div>
+        @foreach (var c in h.Cthoadons)
+        {
+            <div class="d-flex justify-content-between align-items-center border-top pt-2 mt-2 small">
+                <span>@c.MaMhNavigation?.Ten <span class="text-muted">(@c.MaBtNavigation?.TenBienThe) × @c.SoLuong</span></span>
+                @if (daDg.Contains(c.MaMh)) { <span class="text-success"><i class="bi bi-check2"></i> Đã đánh giá</span> }
+                else { <a asp-action="Details" asp-route-id="@c.MaMh" class="btn btn-sm btn-outline-warning">Đánh giá</a> }
+            </div>
+        }
+    </div>
+}
+@if (Model.Count == 0) { <p class="text-muted">Bạn chưa có giao dịch hoàn tất nào.</p> }
