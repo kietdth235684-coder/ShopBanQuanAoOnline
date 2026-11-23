@@ -1,0 +1,6 @@
+@model Hoadon
+@{ ViewData["Title"] = "Hóa đơn HD" + Model.MaHd; }
+<div class="d-flex justify-content-between mb-3 no-print"><a asp-action="LichSuMua" class="btn btn-link">← Lịch sử mua hàng</a><button onclick="window.print()" class="btn btn-outline-dark"><i class="bi bi-printer"></i> In</button></div>
+<div class="khung mx-auto" style="max-width:820px">
+    <partial name="_HoaDonIn" model="Model" />
+</div>

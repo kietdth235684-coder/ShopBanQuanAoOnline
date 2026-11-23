@@ -1,0 +1,17 @@
+@model List<DongBanChay>
+@{ ViewData["Title"] = "Sản phẩm bán chạy"; int hang = 1; int max = Model.Count > 0 ? Math.Max(1, Model.Max(x => x.SoLuongBan)) : 1; }
+<div class="page-title"><h1>Sản phẩm bán chạy</h1><button onclick="window.print()" class="btn btn-outline-secondary no-print"><i class="bi bi-printer"></i> In</button></div>
+<div class="card mb-3 no-print"><div class="card-body"><form method="get" class="row g-2 align-items-end">
+    <div class="col-auto"><label class="form-label">Từ ngày</label><input type="date" name="tuNgay" value="@ViewBag.TuNgay" class="form-control" /></div>
+    <div class="col-auto"><label class="form-label">Đến ngày</label><input type="date" name="denNgay" value="@ViewBag.DenNgay" class="form-control" /></div>
+    <div class="col-auto"><label class="form-label">Số sản phẩm</label><input type="number" name="top" min="1" max="100" value="@ViewBag.Top" class="form-control" /></div>
+    <div class="col-auto"><button class="btn btn-primary">Xem</button></div>
+</form></div></div>
+<p class="small text-muted">Tính theo hóa đơn hoàn tất trong kỳ @ViewBag.TuNgay → @ViewBag.DenNgay.</p>
+<div class="card"><table class="table align-middle mb-0">
+<thead><tr><th>#</th><th></th><th>Sản phẩm</th><th class="text-end">Số lượng bán</th><th class="text-end">Doanh thu</th><th style="width:30%"></th></tr></thead><tbody>
+@foreach (var d in Model)
+{ <tr><td>@(hang++)</td><td>@if (!string.IsNullOrEmpty(d.HinhAnh)) { <img src="~/images/@d.HinhAnh" class="thumb" alt="" /> }</td><td>@d.Ten</td><td class="text-end fw-bold">@d.SoLuongBan</td><td class="text-end">@d.DoanhThu.ToString("N0") đ</td>
+    <td><div class="progress" style="height:8px"><div class="progress-bar bg-warning" style="width:@(d.SoLuongBan * 100 / max)%"></div></div></td></tr> }
+@if (Model.Count == 0) { <tr><td colspan="6" class="text-center text-muted py-3">Chưa có dữ liệu bán hàng trong kỳ.</td></tr> }
+</tbody></table></div>

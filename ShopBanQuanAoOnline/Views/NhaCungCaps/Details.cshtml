@@ -1,0 +1,12 @@
+@model NhaCungCap
+@{ ViewData["Title"] = Model.Ten; }
+<div class="page-title"><h1>@Model.Ten</h1><div><a asp-controller="PhieuNhaps" asp-action="Create" asp-route-maNcc="@Model.MaNcc" class="btn btn-primary">Lập phiếu nhập</a> <a asp-action="Index" class="btn btn-light">← Danh sách</a></div></div>
+<div class="card mb-3"><div class="card-body"><dl class="row mb-0">
+    <dt class="col-sm-2">Điện thoại</dt><dd class="col-sm-4">@Model.DienThoai</dd><dt class="col-sm-2">Email</dt><dd class="col-sm-4">@Model.Email</dd>
+    <dt class="col-sm-2">Địa chỉ</dt><dd class="col-sm-4">@Model.DiaChi</dd><dt class="col-sm-2">Ghi chú</dt><dd class="col-sm-4">@Model.GhiChu</dd>
+</dl></div></div>
+<div class="card"><div class="card-header"><h5 class="card-title mb-0">Lịch sử nhập hàng</h5></div>
+<table class="table mb-0"><thead><tr><th>Phiếu</th><th>Ngày nhập</th><th>Người lập</th><th class="text-end">Tổng tiền</th></tr></thead><tbody>
+@foreach (var p in Model.PhieuNhaps.OrderByDescending(x => x.NgayNhap))
+{ <tr><td><a asp-controller="PhieuNhaps" asp-action="Details" asp-route-id="@p.MaPn">PN@p.MaPn</a></td><td>@p.NgayNhap.ToString("dd/MM/yyyy HH:mm")</td><td>@p.MaNvNavigation?.Ten</td><td class="text-end">@p.TongTien.ToString("N0") đ</td></tr> }
+</tbody></table></div>

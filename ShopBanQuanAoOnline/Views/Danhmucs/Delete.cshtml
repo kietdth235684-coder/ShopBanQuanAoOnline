@@ -1,0 +1,7 @@
+@model Danhmuc
+@{ ViewData["Title"] = "Xóa danh mục"; }
+<div class="page-title"><h1>Xóa danh mục</h1></div>
+<div class="card"><div class="card-body">
+    <p>Xóa danh mục <b>@Model.Ten</b>? Chỉ xóa được khi danh mục không còn sản phẩm.</p>
+    <form asp-action="Delete" method="post"><input type="hidden" asp-for="MaDm" /><button class="btn btn-danger">Xác nhận xóa</button> <a asp-action="Index" class="btn btn-light">Hủy</a></form>
+</div></div>

@@ -1,0 +1,24 @@
+@model Mathang
+@{
+    var diem = ViewBag.DiemDanhGia as Dictionary<int, (double, int)>;
+    (double tb, int sl) dg = diem != null && diem.TryGetValue(Model.MaMh, out var x) ? x : (0, 0);
+    bool giam = Model.GiaGoc > Model.GiaBan;
+}
+<div class="col">
+    <div class="card sp-card h-100">
+        <a asp-controller="Customers" asp-action="Details" asp-route-id="@Model.MaMh" class="anh d-block">
+            <img src="~/images/@(Model.HinhAnh ?? "")" alt="@Model.Ten" loading="lazy" onerror="this.style.visibility='hidden'" />
+            @if (giam) { <span class="badge bg-danger giam">-@(100 - (Model.GiaBan ?? 0) * 100 / Model.GiaGoc!.Value)%</span> }
+            @if ((Model.SoLuong ?? 0) <= 0) { <span class="badge bg-secondary position-absolute" style="top:10px;right:10px">Hết hàng</span> }
+        </a>
+        <div class="card-body px-1 pt-0 pb-2">
+            <a asp-controller="Customers" asp-action="Details" asp-route-id="@Model.MaMh" class="ten">@Model.Ten</a>
+            <div class="sao mb-1">
+                @if (dg.sl > 0) { @for (int i = 1; i <= 5; i++) { <i class="bi @(i <= Math.Round(dg.tb) ? "bi-star-fill" : "bi-star")"></i> } <span class="text-muted">(@dg.sl)</span> }
+                else { <span class="text-muted">Chưa có đánh giá</span> }
+            </div>
+            <span class="gia">@Model.GiaBan?.ToString("N0")đ</span>
+            @if (giam) { <span class="gia-cu">@Model.GiaGoc?.ToString("N0")đ</span> }
+        </div>
+    </div>
+</div>

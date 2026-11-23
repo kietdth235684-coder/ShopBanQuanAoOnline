@@ -1,0 +1,16 @@
+@model Hoadon
+@{ ViewData["Title"] = "HD" + Model.MaHd; var dts = (List<PhieuDoiTra>)ViewBag.DoiTras; }
+<div class="page-title no-print"><h1>Hóa đơn HD@Model.MaHd</h1>
+    <div><button onclick="window.print()" class="btn btn-outline-secondary"><i class="bi bi-printer"></i> In hóa đơn</button>
+        @if (Model.TrangThai == HangSo.TrangThaiHoaDon.HoanTat) { <a asp-controller="DoiTras" asp-action="Create" asp-route-maHd="@Model.MaHd" class="btn btn-outline-warning"><i class="bi bi-arrow-left-right"></i> Đổi / trả hàng</a> }
+        <a asp-action="Index" class="btn btn-light">← Danh sách</a></div></div>
+<div class="card"><div class="card-body" style="max-width:820px">
+    <partial name="_HoaDonIn" model="Model" />
+</div></div>
+@if (dts.Count > 0)
+{
+    <div class="card mt-3 no-print"><div class="card-header"><h5 class="card-title mb-0">Phiếu đổi trả của hóa đơn</h5></div>
+    <table class="table mb-0"><thead><tr><th>Phiếu</th><th>Ngày</th><th>Lý do</th><th class="text-end">Tiền hoàn</th></tr></thead><tbody>
+    @foreach (var p in dts) { <tr><td><a asp-controller="DoiTras" asp-action="Details" asp-route-id="@p.MaPdt">DT@p.MaPdt</a></td><td>@p.NgayLap.ToString("dd/MM/yyyy HH:mm")</td><td>@p.LyDo</td><td class="text-end">@p.TienHoan.ToString("N0") đ</td></tr> }
+    </tbody></table></div>
+}

@@ -1,0 +1,12 @@
+@model List<Khachhang>
+@{ ViewData["Title"] = "Khách hàng"; var soDon = (Dictionary<int, int>)ViewBag.SoDon; var daMua = (Dictionary<int, long>)ViewBag.DaMua; }
+<div class="page-title"><h1>Khách hàng</h1></div>
+<div class="card mb-3"><div class="card-body"><form method="get" class="d-flex gap-2" style="max-width:480px">
+    <input name="tukhoa" value="@ViewBag.tukhoa" class="form-control" placeholder="Tên, email hoặc số điện thoại" /><button class="btn btn-secondary">Tìm</button></form></div></div>
+<div class="card"><div class="table-responsive"><table class="table table-hover mb-0">
+<thead><tr><th>Mã</th><th>Họ tên</th><th>Email</th><th>Điện thoại</th><th class="text-end">Số đơn COD</th><th class="text-end">Đã mua (hoàn tất)</th><th></th></tr></thead><tbody>
+@foreach (var k in Model)
+{ <tr><td>@k.MaKh</td><td>@k.Ten</td><td>@k.Email</td><td>@k.DienThoai</td><td class="text-end">@soDon[k.MaKh]</td><td class="text-end">@daMua[k.MaKh].ToString("N0") đ</td>
+    <td class="text-nowrap"><a asp-action="Details" asp-route-id="@k.MaKh" class="btn btn-sm btn-outline-primary">Chi tiết</a> <a asp-action="Edit" asp-route-id="@k.MaKh" class="btn btn-sm btn-outline-secondary">Sửa</a></td></tr> }
+@if (Model.Count == 0) { <tr><td colspan="7" class="text-center text-muted py-3">Không có khách hàng.</td></tr> }
+</tbody></table></div></div>

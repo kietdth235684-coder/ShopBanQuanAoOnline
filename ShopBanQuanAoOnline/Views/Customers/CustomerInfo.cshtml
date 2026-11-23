@@ -1,0 +1,34 @@
+@model Khachhang
+@{ ViewData["Title"] = "Hồ sơ của tôi"; var dc = Model.Diachis.OrderByDescending(d => d.MacDinh).FirstOrDefault(); }
+<h1 class="h4 fw-bold mb-3">Xin chào, @Model.Ten</h1>
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><a asp-action="DonHang" class="khung d-block text-decoration-none"><i class="bi bi-box-seam fs-4"></i><div class="fw-semibold">Đơn hàng của tôi</div><small class="text-muted">@ViewBag.SoDon đơn · @ViewBag.DonDangXuLy đang xử lý</small></a></div>
+    <div class="col-md-4"><a asp-action="LichSuMua" class="khung d-block text-decoration-none"><i class="bi bi-clock-history fs-4"></i><div class="fw-semibold">Lịch sử mua hàng & hóa đơn</div><small class="text-muted">Xem hóa đơn, đánh giá sản phẩm</small></a></div>
+    <div class="col-md-4"><a asp-action="Signout" class="khung d-block text-decoration-none text-danger"><i class="bi bi-box-arrow-right fs-4"></i><div class="fw-semibold">Đăng xuất</div><small class="text-muted">@Model.Email</small></a></div>
+</div>
+<div class="row g-4">
+    <div class="col-lg-7"><div class="khung">
+        <h2 class="h6 fw-bold mb-3">Thông tin cá nhân & địa chỉ giao hàng mặc định</h2>
+        <form asp-action="CapNhatThongTin" method="post">
+            <div class="row">
+                <div class="col-md-6 mb-3"><label class="form-label">Họ tên</label><input name="hoten" value="@Model.Ten" class="form-control" maxlength="100" required /></div>
+                <div class="col-md-6 mb-3"><label class="form-label">Số điện thoại</label><input name="dienthoai" value="@Model.DienThoai" class="form-control" pattern="0[0-9]{9,10}" required /></div>
+                <div class="col-12 mb-3"><label class="form-label">Email</label><input value="@Model.Email" class="form-control" disabled /></div>
+                <div class="col-12 mb-3"><label class="form-label">Số nhà, tên đường</label><input name="diachi" value="@dc?.DiaChi1" class="form-control" maxlength="100" /></div>
+                <div class="col-md-4 mb-3"><label class="form-label">Phường/Xã</label><input name="phuongxa" value="@dc?.PhuongXa" class="form-control" maxlength="50" /></div>
+                <div class="col-md-4 mb-3"><label class="form-label">Quận/Huyện</label><input name="quanhuyen" value="@dc?.QuanHuyen" class="form-control" maxlength="50" /></div>
+                <div class="col-md-4 mb-3"><label class="form-label">Tỉnh/Thành</label><input name="tinhthanh" value="@dc?.TinhThanh" class="form-control" maxlength="50" /></div>
+            </div>
+            <button class="btn btn-dark">Lưu thông tin</button>
+        </form>
+    </div></div>
+    <div class="col-lg-5"><div class="khung">
+        <h2 class="h6 fw-bold mb-3">Đổi mật khẩu</h2>
+        <form asp-action="DoiMatKhau" method="post">
+            <div class="mb-3"><label class="form-label">Mật khẩu hiện tại</label><input type="password" name="matkhaucu" class="form-control" required /></div>
+            <div class="mb-3"><label class="form-label">Mật khẩu mới</label><input type="password" name="matkhaumoi" class="form-control" minlength="6" required /></div>
+            <div class="mb-3"><label class="form-label">Nhập lại mật khẩu mới</label><input type="password" name="xacnhan" class="form-control" minlength="6" required /></div>
+            <button class="btn btn-outline-dark">Đổi mật khẩu</button>
+        </form>
+    </div></div>
+</div>

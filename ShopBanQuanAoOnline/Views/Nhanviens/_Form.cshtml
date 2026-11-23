@@ -1,0 +1,11 @@
+@model Nhanvien
+<div asp-validation-summary="All" class="text-danger"></div>
+<div class="row">
+    <div class="col-md-6 mb-3"><label asp-for="Ten" class="form-label"></label><input asp-for="Ten" class="form-control" /></div>
+    <div class="col-md-6 mb-3"><label asp-for="Email" class="form-label">Email đăng nhập</label><input asp-for="Email" class="form-control" /></div>
+    <div class="col-md-4 mb-3"><label asp-for="DienThoai" class="form-label"></label><input asp-for="DienThoai" class="form-control" /></div>
+    <div class="col-md-4 mb-3"><label asp-for="MaCv" class="form-label"></label><select asp-for="MaCv" asp-items="ViewBag.MaCv" class="form-select"></select></div>
+    <div class="col-md-4 mb-3"><label asp-for="VaiTro" class="form-label">Vai trò (phân quyền)</label><select asp-for="VaiTro" asp-items="ViewBag.VaiTro" class="form-select"></select>
+        <div class="form-text">Chủ cửa hàng: toàn quyền, xem báo cáo, quản lý nhân viên. Nhân viên: bán hàng, xử lý đơn, kho, duyệt đánh giá.</div></div>
+    <div class="col-md-4 mb-3"><div class="form-check form-switch mt-2"><input asp-for="TrangThai" class="form-check-input" /><label asp-for="TrangThai" class="form-check-label"></label></div></div>
+</div>

@@ -1,0 +1,23 @@
+/* Bổ sung giao diện quản trị (dựa trên AdminKit) */
+body { font-family: 'Inter', sans-serif; }
+.sidebar, .sidebar-content { background: #1f2a3d; }
+.sidebar-brand { font-weight: 700; letter-spacing: .5px; }
+.sidebar-header { color: #8fa3bf !important; font-size: .72rem; text-transform: uppercase; }
+.sidebar-link i { font-size: 1rem; width: 1.3rem; display: inline-block; }
+.sidebar-item.active > .sidebar-link { border-left-color: #f0a500 !important; background: linear-gradient(90deg, rgba(240,165,0,.15), rgba(240,165,0,0)); }
+.content { padding: 1.5rem 1.5rem .5rem; }
+.page-title { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.page-title h1 { font-size: 1.4rem; margin: 0; font-weight: 600; }
+.card { border: 0; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.table thead th { background: #f4f6fa; font-weight: 600; font-size: .85rem; white-space: nowrap; }
+.table td { vertical-align: middle; }
+.stat-card .so { font-size: 1.6rem; font-weight: 700; }
+.stat-card .nhan { color: #6c757d; font-size: .85rem; }
+.thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; }
+.money { white-space: nowrap; }
+.form-label { font-weight: 500; }
+@media print {
+    .sidebar, .navbar, .footer, .no-print { display: none !important; }
+    .content { padding: 0; }
+    .card { box-shadow: none; }
+}

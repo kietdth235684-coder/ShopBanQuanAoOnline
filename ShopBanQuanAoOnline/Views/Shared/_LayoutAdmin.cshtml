@@ -1,0 +1,122 @@
+@{
+    var ctrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var act = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    bool chu = User.IsInRole(HangSo.VaiTro.ChuCuaHang);
+    string Act(string c, string? a = null) => string.Equals(ctrl, c, StringComparison.OrdinalIgnoreCase) && (a == null || string.Equals(act, a, StringComparison.OrdinalIgnoreCase)) ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@(ViewData["Title"] ?? "Quản trị") - MIKA Admin</title>
+    <link rel="icon" href="~/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="~/css/app.css" rel="stylesheet">
+    <link href="~/css/admin.css" rel="stylesheet" asp-append-version="true">
+</head>
+<body>
+    <div class="wrapper">
+        <nav id="sidebar" class="sidebar js-sidebar">
+            <div class="sidebar-content js-simplebar">
+                <a class="sidebar-brand" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-bag-heart-fill me-1"></i> <span class="align-middle">MIKA ADMIN</span>
+                </a>
+                <ul class="sidebar-nav">
+                    <li class="sidebar-item @Act("Home")"><a class="sidebar-link" asp-controller="Home" asp-action="Index"><i class="bi bi-speedometer2"></i> <span>Tổng quan</span></a></li>
+
+                    <li class="sidebar-header">Bán hàng &amp; hóa đơn</li>
+                    <li class="sidebar-item @Act("BanHang")"><a class="sidebar-link" asp-controller="BanHang" asp-action="Index"><i class="bi bi-cash-coin"></i> <span>Bán tại quầy</span></a></li>
+                    <li class="sidebar-item @Act("DonHangs")"><a class="sidebar-link" asp-controller="DonHangs" asp-action="Index"><i class="bi bi-truck"></i> <span>Đơn COD website</span></a></li>
+                    <li class="sidebar-item @Act("Hoadons")"><a class="sidebar-link" asp-controller="Hoadons" asp-action="Index"><i class="bi bi-receipt"></i> <span>Tra cứu hóa đơn</span></a></li>
+                    <li class="sidebar-item @Act("DoiTras")"><a class="sidebar-link" asp-controller="DoiTras" asp-action="Index"><i class="bi bi-arrow-left-right"></i> <span>Đổi trả</span></a></li>
+
+                    <li class="sidebar-header">Sản phẩm</li>
+                    <li class="sidebar-item @Act("Mathangs")"><a class="sidebar-link" asp-controller="Mathangs" asp-action="Index"><i class="bi bi-tags"></i> <span>Sản phẩm &amp; size/màu</span></a></li>
+                    <li class="sidebar-item @Act("Danhmucs")"><a class="sidebar-link" asp-controller="Danhmucs" asp-action="Index"><i class="bi bi-diagram-3"></i> <span>Danh mục</span></a></li>
+                    <li class="sidebar-item @Act("DanhGias")"><a class="sidebar-link" asp-controller="DanhGias" asp-action="Index"><i class="bi bi-star-half"></i> <span>Đánh giá sản phẩm</span></a></li>
+
+                    <li class="sidebar-header">Kho &amp; nhà cung cấp</li>
+                    <li class="sidebar-item @Act("Khos")"><a class="sidebar-link" asp-controller="Khos" asp-action="Index"><i class="bi bi-boxes"></i> <span>Tồn kho &amp; cảnh báo</span></a></li>
+                    <li class="sidebar-item @Act("PhieuNhaps")"><a class="sidebar-link" asp-controller="PhieuNhaps" asp-action="Index"><i class="bi bi-box-arrow-in-down"></i> <span>Phiếu nhập</span></a></li>
+                    <li class="sidebar-item @Act("PhieuXuats")"><a class="sidebar-link" asp-controller="PhieuXuats" asp-action="Index"><i class="bi bi-box-arrow-up"></i> <span>Phiếu xuất</span></a></li>
+                    <li class="sidebar-item @Act("KiemKes")"><a class="sidebar-link" asp-controller="KiemKes" asp-action="Index"><i class="bi bi-clipboard-check"></i> <span>Kiểm kê</span></a></li>
+                    <li class="sidebar-item @Act("NhaCungCaps")"><a class="sidebar-link" asp-controller="NhaCungCaps" asp-action="Index"><i class="bi bi-building"></i> <span>Nhà cung cấp</span></a></li>
+
+                    <li class="sidebar-header">Khách hàng</li>
+                    <li class="sidebar-item @Act("Khachhangs")"><a class="sidebar-link" asp-controller="Khachhangs" asp-action="Index"><i class="bi bi-people"></i> <span>Khách hàng</span></a></li>
+
+                    <li class="sidebar-header">Nhân viên</li>
+                    <li class="sidebar-item @Act("ChamCongs")"><a class="sidebar-link" asp-controller="ChamCongs" asp-action="Index"><i class="bi bi-calendar-check"></i> <span>Chấm công</span></a></li>
+                    @if (chu)
+                    {
+                        <li class="sidebar-item @Act("Nhanviens")"><a class="sidebar-link" asp-controller="Nhanviens" asp-action="Index"><i class="bi bi-person-badge"></i> <span>Tài khoản nhân viên</span></a></li>
+                        <li class="sidebar-item @Act("Chucvus")"><a class="sidebar-link" asp-controller="Chucvus" asp-action="Index"><i class="bi bi-briefcase"></i> <span>Chức vụ</span></a></li>
+
+                        <li class="sidebar-header">Báo cáo thống kê</li>
+                        <li class="sidebar-item @Act("BaoCaos","DoanhThu")"><a class="sidebar-link" asp-controller="BaoCaos" asp-action="DoanhThu"><i class="bi bi-graph-up-arrow"></i> <span>Doanh thu &amp; lợi nhuận</span></a></li>
+                        <li class="sidebar-item @Act("BaoCaos","BanChay")"><a class="sidebar-link" asp-controller="BaoCaos" asp-action="BanChay"><i class="bi bi-trophy"></i> <span>Sản phẩm bán chạy</span></a></li>
+                        <li class="sidebar-item @Act("Khos","NhapXuatTon")"><a class="sidebar-link" asp-controller="Khos" asp-action="NhapXuatTon"><i class="bi bi-table"></i> <span>Nhập – xuất – tồn</span></a></li>
+
+                        <li class="sidebar-header">Cửa hàng</li>
+                        <li class="sidebar-item @Act("Cuahangs")"><a class="sidebar-link" asp-controller="Cuahangs" asp-action="Index"><i class="bi bi-shop"></i> <span>Thông tin cửa hàng</span></a></li>
+                    }
+                </ul>
+            </div>
+        </nav>
+
+        <div class="main">
+            <nav class="navbar navbar-expand navbar-light navbar-bg">
+                <a class="sidebar-toggle js-sidebar-toggle"><i class="hamburger align-self-center"></i></a>
+                <div class="navbar-collapse collapse">
+                    <ul class="navbar-nav navbar-align align-items-center">
+                        <li class="nav-item me-3 d-none d-md-block">
+                            <a class="btn btn-sm btn-outline-secondary" asp-controller="Customers" asp-action="Index" target="_blank"><i class="bi bi-box-arrow-up-right"></i> Xem website</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i>
+                                <span class="text-dark">@User.Identity?.Name</span>
+                                <span class="badge bg-@(chu ? "danger" : "secondary") ms-1">@HangSo.VaiTro.Ten(chu ? HangSo.VaiTro.ChuCuaHang : HangSo.VaiTro.NhanVien)</span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" asp-controller="TaiKhoan" asp-action="DoiMatKhau"><i class="bi bi-key me-1"></i> Đổi mật khẩu</a>
+                                <div class="dropdown-divider"></div>
+                                <form asp-controller="TaiKhoan" asp-action="DangXuat" method="post" class="px-3">
+                                    <button type="submit" class="btn btn-link p-0 text-danger"><i class="bi bi-box-arrow-right me-1"></i> Đăng xuất</button>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="content">
+                <div class="container-fluid p-0">
+                    <partial name="_ThongBao" />
+                    @RenderBody()
+                </div>
+            </main>
+
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row text-muted">
+                        <div class="col-6 text-start"><strong>Shop quần áo MIKA</strong> – Hệ thống quản lý bán hàng</div>
+                        <div class="col-6 text-end">@DateTime.Now.Year</div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <script src="~/js/app.js"></script>
+    <script>
+        // Hỏi lại trước các thao tác không hoàn tác được
+        document.addEventListener('submit', function (e) {
+            var msg = e.target.getAttribute('data-confirm');
+            if (msg && !confirm(msg)) e.preventDefault();
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
