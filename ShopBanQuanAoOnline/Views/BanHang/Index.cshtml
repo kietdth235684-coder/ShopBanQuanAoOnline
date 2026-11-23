@@ -1,0 +1,97 @@
+@model List<CartItem>
+@{
+    ViewData["Title"] = "Bán tại quầy";
+    var kq = ViewBag.KetQua as List<BienThe>;
+    var kh = ViewBag.KhachHang as Khachhang;
+    int tong = Model.Sum(x => x.ThanhTien);
+}
+<div class="page-title"><h1><i class="bi bi-cash-coin"></i> Bán hàng tại quầy</h1></div>
+<div class="row">
+    <div class="col-lg-6 mb-3">
+        <div class="card h-100"><div class="card-header"><h5 class="card-title mb-0">1. Chọn sản phẩm – size – màu</h5></div>
+        <div class="card-body">
+            <form method="get" class="d-flex gap-2 mb-3">
+                <input name="tukhoa" value="@ViewBag.tukhoa" class="form-control" placeholder="Tên sản phẩm, màu, mã SP hoặc mã biến thể" autofocus />
+                <button class="btn btn-secondary"><i class="bi bi-search"></i></button>
+            </form>
+            @if (kq != null)
+            {
+                <div class="table-responsive" style="max-height:480px"><table class="table table-sm align-middle">
+                <thead><tr><th>Sản phẩm</th><th>Size/Màu</th><th class="text-end">Giá</th><th class="text-end">Tồn</th><th style="width:150px"></th></tr></thead><tbody>
+                @foreach (var b in kq)
+                {
+                    <tr class="@(b.SoLuongTon == 0 ? "text-muted" : "")">
+                        <td>@b.MaMhNavigation?.Ten</td><td>@b.TenBienThe</td><td class="text-end money">@b.MaMhNavigation?.GiaBan?.ToString("N0")</td><td class="text-end">@b.SoLuongTon</td>
+                        <td>@if (b.SoLuongTon > 0)
+                            {
+                                <form asp-action="Them" method="post" class="d-flex gap-1">
+                                    <input type="hidden" name="maBt" value="@b.MaBt" /><input type="hidden" name="tukhoa" value="@ViewBag.tukhoa" />
+                                    <input type="number" name="soLuong" value="1" min="1" max="@b.SoLuongTon" class="form-control form-control-sm" style="width:64px" />
+                                    <button class="btn btn-sm btn-primary"><i class="bi bi-plus"></i></button>
+                                </form>
+                            }
+                            else { <span class="badge bg-danger">Hết hàng</span> }</td>
+                    </tr>
+                }
+                @if (kq.Count == 0) { <tr><td colspan="5" class="text-muted">Không tìm thấy sản phẩm.</td></tr> }
+                </tbody></table></div>
+            }
+            else { <p class="text-muted">Nhập từ khóa để tìm sản phẩm.</p> }
+        </div></div>
+    </div>
+    <div class="col-lg-6 mb-3">
+        <div class="card"><div class="card-header d-flex justify-content-between align-items-center"><h5 class="card-title mb-0">2. Hóa đơn đang lập</h5>
+            @if (Model.Count > 0) { <form asp-action="HuyGio" method="post" data-confirm="Hủy toàn bộ hóa đơn đang lập?"><button class="btn btn-sm btn-outline-danger">Hủy</button></form> }</div>
+        <div class="card-body">
+            <div class="mb-3">
+                @if (kh != null)
+                {
+                    <div class="d-flex justify-content-between align-items-center bg-light rounded p-2">
+                        <span><i class="bi bi-person"></i> Khách: <b>@kh.Ten</b> – @kh.DienThoai</span>
+                        <form asp-action="BoKhach" method="post"><button class="btn btn-sm btn-link">Bỏ chọn</button></form>
+                    </div>
+                }
+                else
+                {
+                    <form method="get" class="d-flex gap-2"><input name="sdt" class="form-control form-control-sm" placeholder="SĐT khách thành viên (tùy chọn – để trống nếu khách lẻ)" /><button class="btn btn-sm btn-outline-secondary">Gắn khách</button></form>
+                }
+            </div>
+            <table class="table table-sm align-middle">
+                <thead><tr><th>Sản phẩm</th><th style="width:120px">SL</th><th class="text-end">Thành tiền</th><th></th></tr></thead>
+                <tbody>
+                @foreach (var i in Model)
+                {
+                    <tr><td>@i.Ten<br /><small class="text-muted">@i.KichCo / @i.MauSac · @i.DonGia.ToString("N0")</small></td>
+                        <td><form asp-action="CapNhat" method="post" class="d-flex gap-1"><input type="hidden" name="maBt" value="@i.MaBt" />
+                            <input type="number" name="soLuong" value="@i.SoLuong" min="0" class="form-control form-control-sm" style="width:64px" /><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-repeat"></i></button></form></td>
+                        <td class="text-end money">@i.ThanhTien.ToString("N0")</td>
+                        <td><form asp-action="Xoa" method="post"><input type="hidden" name="maBt" value="@i.MaBt" /><button class="btn btn-sm btn-link text-danger"><i class="bi bi-trash"></i></button></form></td></tr>
+                }
+                @if (Model.Count == 0) { <tr><td colspan="4" class="text-muted">Chưa có sản phẩm.</td></tr> }
+                </tbody>
+                <tfoot><tr><th colspan="2" class="text-end">TỔNG TIỀN</th><th class="text-end text-danger fs-5 money" id="tong" data-tong="@tong">@tong.ToString("N0") đ</th><th></th></tr></tfoot>
+            </table>
+            @if (Model.Count > 0)
+            {
+                <form asp-action="ThanhToan" method="post" data-confirm="Xác nhận đã nhận tiền và lập hóa đơn?">
+                    <div class="row g-2">
+                        <div class="col-6"><label class="form-label">Tiền khách đưa</label><input type="number" name="tienKhachDua" id="khachDua" min="@tong" value="@tong" class="form-control" required /></div>
+                        <div class="col-6"><label class="form-label">Tiền thối lại</label><div class="form-control bg-light money" id="tienThoi">0 đ</div></div>
+                        <div class="col-12"><label class="form-label">Ghi chú</label><input name="ghiChu" maxlength="255" class="form-control" /></div>
+                        <div class="col-12 d-grid mt-2"><button class="btn btn-success btn-lg"><i class="bi bi-check2-circle"></i> Thanh toán tiền mặt & lập hóa đơn</button></div>
+                    </div>
+                </form>
+            }
+        </div></div>
+    </div>
+</div>
+@section Scripts {
+<script>
+    var kd = document.getElementById('khachDua');
+    if (kd) kd.addEventListener('input', function () {
+        var t = parseInt(document.getElementById('tong').dataset.tong) || 0;
+        var thoi = (parseInt(kd.value) || 0) - t;
+        document.getElementById('tienThoi').textContent = (thoi >= 0 ? thoi.toLocaleString('vi-VN') + ' đ' : 'Chưa đủ tiền');
+    });
+</script>
+}

@@ -1,0 +1,21 @@
+@model IEnumerable<Nhanvien>
+@{ ViewData["Title"] = "Tài khoản nhân viên"; }
+<div class="page-title"><h1>Tài khoản nhân viên</h1><a asp-action="Create" class="btn btn-primary"><i class="bi bi-person-plus"></i> Thêm nhân viên</a></div>
+<div class="card"><div class="table-responsive"><table class="table table-hover mb-0">
+    <thead><tr><th>Mã</th><th>Họ tên</th><th>Email đăng nhập</th><th>Điện thoại</th><th>Chức vụ</th><th>Vai trò</th><th>Trạng thái</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var n in Model)
+    {
+        <tr>
+            <td>@n.MaNv</td><td>@n.Ten</td><td>@n.Email</td><td>@n.DienThoai</td><td>@n.MaCvNavigation?.Ten</td>
+            <td><span class="badge bg-@(n.VaiTro == HangSo.VaiTro.ChuCuaHang ? "danger" : "secondary")">@HangSo.VaiTro.Ten(n.VaiTro)</span></td>
+            <td>@if (n.TrangThai) { <span class="badge bg-success">Hoạt động</span> } else { <span class="badge bg-dark">Đã khóa</span> }</td>
+            <td class="text-nowrap">
+                <a asp-action="Details" asp-route-id="@n.MaNv" class="btn btn-sm btn-outline-primary">Chi tiết</a>
+                <a asp-action="Edit" asp-route-id="@n.MaNv" class="btn btn-sm btn-outline-secondary">Sửa</a>
+                <a asp-action="Delete" asp-route-id="@n.MaNv" class="btn btn-sm btn-outline-danger">Xóa</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table></div></div>

@@ -1,0 +1,28 @@
+@model List<DanhGia>
+@{ ViewData["Title"] = "Đánh giá sản phẩm"; int? tt = ViewBag.TrangThai; }
+<div class="page-title"><h1>Đánh giá sản phẩm</h1></div>
+<ul class="nav nav-pills mb-3">
+    <li class="nav-item"><a class="nav-link @(tt == null ? "active" : "")" asp-action="Index">Tất cả</a></li>
+    <li class="nav-item"><a class="nav-link @(tt == 0 ? "active" : "")" asp-action="Index" asp-route-trangThai="0">Chờ duyệt <span class="badge bg-warning text-dark">@ViewBag.ChoDuyet</span></a></li>
+    <li class="nav-item"><a class="nav-link @(tt == 1 ? "active" : "")" asp-action="Index" asp-route-trangThai="1">Đang hiển thị</a></li>
+    <li class="nav-item"><a class="nav-link @(tt == 2 ? "active" : "")" asp-action="Index" asp-route-trangThai="2">Đã ẩn</a></li>
+</ul>
+<div class="card"><div class="table-responsive"><table class="table mb-0 align-middle">
+<thead><tr><th>Ngày</th><th>Sản phẩm</th><th>Khách hàng</th><th>Số sao</th><th>Nhận xét</th><th>Trạng thái</th><th style="width:170px"></th></tr></thead><tbody>
+@foreach (var d in Model)
+{
+    <tr><td class="small">@d.NgayDanhGia.ToString("dd/MM/yyyy HH:mm")</td>
+        <td><a asp-controller="Mathangs" asp-action="Details" asp-route-id="@d.MaMh">@d.MaMhNavigation?.Ten</a></td>
+        <td>@d.MaKhNavigation?.Ten</td>
+        <td class="text-warning text-nowrap">@for (int i = 1; i <= 5; i++) { <i class="bi @(i <= d.SoSao ? "bi-star-fill" : "bi-star")"></i> }</td>
+        <td style="max-width:360px">@d.NhanXet</td>
+        <td><span class="badge bg-@HangSo.TrangThaiDanhGia.Mau(d.TrangThai)">@HangSo.TrangThaiDanhGia.Ten(d.TrangThai)</span></td>
+        <td class="text-nowrap">
+            @if (d.TrangThai != HangSo.TrangThaiDanhGia.HienThi)
+            { <form asp-action="DoiTrangThai" method="post" class="d-inline"><input type="hidden" name="id" value="@d.MaDg" /><input type="hidden" name="trangThai" value="1" /><input type="hidden" name="locTrangThai" value="@tt" /><button class="btn btn-sm btn-success">Duyệt</button></form> }
+            @if (d.TrangThai != HangSo.TrangThaiDanhGia.An)
+            { <form asp-action="DoiTrangThai" method="post" class="d-inline"><input type="hidden" name="id" value="@d.MaDg" /><input type="hidden" name="trangThai" value="2" /><input type="hidden" name="locTrangThai" value="@tt" /><button class="btn btn-sm btn-outline-secondary">Ẩn</button></form> }
+        </td></tr>
+}
+@if (Model.Count == 0) { <tr><td colspan="7" class="text-center text-muted py-3">Không có đánh giá.</td></tr> }
+</tbody></table></div></div>

@@ -1,0 +1,12 @@
+@model Khachhang
+@{ ViewData["Title"] = "Xóa khách hàng"; bool gd = (bool)ViewBag.CoGiaoDich; }
+<div class="page-title"><h1>Xóa khách hàng</h1></div>
+<div class="card"><div class="card-body">
+    <h5>@Model.Ten – @Model.Email</h5>
+    @if (gd) { <div class="alert alert-warning">Khách hàng đã có giao dịch nên không thể xóa.</div> <a asp-action="Details" asp-route-id="@Model.MaKh" class="btn btn-light">Quay lại</a> }
+    else
+    {
+        <div class="alert alert-danger">Tài khoản khách hàng và địa chỉ sẽ bị xóa vĩnh viễn.</div>
+        <form asp-action="Delete" method="post"><input type="hidden" name="id" value="@Model.MaKh" /><button class="btn btn-danger">Xác nhận xóa</button> <a asp-action="Details" asp-route-id="@Model.MaKh" class="btn btn-light">Hủy</a></form>
+    }
+</div></div>

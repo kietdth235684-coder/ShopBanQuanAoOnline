@@ -1,0 +1,23 @@
+@model ErrorViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Đã xảy ra lỗi</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+    <div class="container py-5 text-center">
+        <h1 class="text-danger h3">Đã xảy ra lỗi khi xử lý yêu cầu</h1>
+        <p class="text-muted">Vui lòng thử lại sau. Nếu lỗi lặp lại, hãy liên hệ cửa hàng.</p>
+        @if (Model?.ShowRequestId == true)
+        {
+            <p class="small text-muted">Mã lỗi: <code>@Model.RequestId</code></p>
+        }
+        <a class="btn btn-primary" href="/">Về trang chủ</a>
+    </div>
+</body>
+</html>

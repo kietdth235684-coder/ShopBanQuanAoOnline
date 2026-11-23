@@ -1,0 +1,18 @@
+@model Mathang
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="row">
+    <div class="col-md-8 mb-3"><label asp-for="Ten" class="form-label"></label><input asp-for="Ten" class="form-control" /><span asp-validation-for="Ten" class="text-danger small"></span></div>
+    <div class="col-md-4 mb-3"><label asp-for="MaDm" class="form-label"></label>
+        <select asp-for="MaDm" asp-items="ViewBag.MaDmList" class="form-select"><option value="">-- Chọn danh mục --</option></select>
+        <span asp-validation-for="MaDm" class="text-danger small"></span></div>
+    <div class="col-md-4 mb-3"><label asp-for="GiaBan" class="form-label"></label><input asp-for="GiaBan" type="number" min="0" class="form-control" /><span asp-validation-for="GiaBan" class="text-danger small"></span></div>
+    <div class="col-md-4 mb-3"><label asp-for="GiaGoc" class="form-label"></label><input asp-for="GiaGoc" type="number" min="0" class="form-control" />
+        <div class="form-text">Giá trước giảm (hiện gạch ngang trên website). Để trống nếu không giảm.</div><span asp-validation-for="GiaGoc" class="text-danger small"></span></div>
+    <div class="col-md-4 mb-3"><label asp-for="GiaNhap" class="form-label"></label><input asp-for="GiaNhap" type="number" min="0" class="form-control" />
+        <div class="form-text">Tự cập nhật bình quân khi lập phiếu nhập; dùng tính lợi nhuận ước tính.</div></div>
+    <div class="col-12 mb-3"><label asp-for="MoTa" class="form-label"></label><textarea asp-for="MoTa" rows="3" class="form-control"></textarea></div>
+    <div class="col-md-8 mb-3"><label class="form-label">Hình ảnh</label><input type="file" name="file" accept=".jpg,.jpeg,.png,.webp,.gif" class="form-control" />
+        <span class="text-danger small">@Html.ValidationMessage("file")</span>
+        @if (!string.IsNullOrEmpty(Model?.HinhAnh)) { <div class="mt-2"><img src="~/images/@Model.HinhAnh" style="height:90px" class="rounded" alt="" /> <span class="small text-muted">Ảnh hiện tại (chọn file mới để thay)</span></div> }</div>
+    <div class="col-md-4 mb-3 d-flex align-items-center"><div class="form-check form-switch"><input asp-for="TrangThai" class="form-check-input" /><label asp-for="TrangThai" class="form-check-label"></label></div></div>
+</div>

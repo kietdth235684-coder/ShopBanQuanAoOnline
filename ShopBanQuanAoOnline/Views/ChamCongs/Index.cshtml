@@ -1,0 +1,42 @@
+@model List<ChamCong>
+@{
+    ViewData["Title"] = "Chấm công";
+    bool chu = (bool)(ViewData["LaChuCuaHang"] ?? false);
+    var homNay = ViewBag.HomNay as ChamCong;
+    var tongHop = Model.GroupBy(c => c.MaNvNavigation?.Ten ?? "").Select(g => new { Ten = g.Key, Ngay = g.Count(), Gio = g.Sum(x => x.SoGio) }).OrderBy(x => x.Ten).ToList();
+}
+<div class="page-title">
+    <h1>Chấm công tháng @ViewBag.Thang/@ViewBag.Nam</h1>
+    <div class="d-flex gap-2">
+        @if (homNay == null) { <form asp-action="VaoCa" method="post"><button class="btn btn-success"><i class="bi bi-door-open"></i> Vào ca</button></form> }
+        else if (homNay.GioRa == null) { <form asp-action="RaCa" method="post"><button class="btn btn-outline-danger"><i class="bi bi-door-closed"></i> Kết thúc ca (vào lúc @homNay.GioVao.ToString("HH:mm"))</button></form> }
+        else { <span class="badge bg-success align-self-center">Hôm nay đã chấm công đủ</span> }
+    </div>
+</div>
+<div class="card mb-3"><div class="card-body">
+<form method="get" class="row g-2 align-items-end">
+    <div class="col-auto"><label class="form-label">Tháng</label><input type="number" name="thang" min="1" max="12" value="@ViewBag.Thang" class="form-control" /></div>
+    <div class="col-auto"><label class="form-label">Năm</label><input type="number" name="nam" min="2000" max="2100" value="@ViewBag.Nam" class="form-control" /></div>
+    @if (chu)
+    {
+        <div class="col-auto"><label class="form-label">Nhân viên</label><select name="maNv" asp-items="ViewBag.NhanViens" class="form-select"><option value="">Tất cả</option></select></div>
+    }
+    <div class="col-auto"><button class="btn btn-secondary">Xem</button></div>
+</form>
+</div></div>
+<div class="row">
+<div class="col-lg-4 mb-3"><div class="card"><div class="card-header"><h5 class="card-title mb-0">Tổng hợp</h5></div>
+<table class="table table-sm mb-0"><thead><tr><th>Nhân viên</th><th class="text-end">Ngày công</th><th class="text-end">Giờ làm</th></tr></thead><tbody>
+@foreach (var t in tongHop) { <tr><td>@t.Ten</td><td class="text-end">@t.Ngay</td><td class="text-end">@t.Gio.ToString("0.##")</td></tr> }
+</tbody></table></div></div>
+<div class="col-lg-8 mb-3"><div class="card"><div class="table-responsive"><table class="table table-hover mb-0">
+<thead><tr><th>Ngày</th><th>Nhân viên</th><th>Giờ vào</th><th>Giờ ra</th><th class="text-end">Số giờ</th><th>Ghi chú</th>@if (chu) { <th></th> }</tr></thead><tbody>
+@foreach (var c in Model)
+{
+    <tr><td>@c.Ngay.ToString("dd/MM/yyyy")</td><td>@c.MaNvNavigation?.Ten</td><td>@c.GioVao.ToString("HH:mm")</td><td>@(c.GioRa?.ToString("HH:mm") ?? "—")</td>
+        <td class="text-end">@c.SoGio</td><td class="small">@c.GhiChu</td>
+        @if (chu) { <td><a asp-action="Edit" asp-route-id="@c.MaCc" class="btn btn-sm btn-outline-secondary">Sửa</a></td> }</tr>
+}
+@if (Model.Count == 0) { <tr><td colspan="7" class="text-center text-muted py-3">Chưa có dữ liệu chấm công.</td></tr> }
+</tbody></table></div></div></div>
+</div>

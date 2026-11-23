@@ -1,0 +1,11 @@
+@model PhieuKiemKe
+@{ ViewData["Title"] = "KK" + Model.MaKk; }
+<div class="page-title"><h1>Phiếu kiểm kê KK@Model.MaKk</h1><div class="no-print"><button onclick="window.print()" class="btn btn-outline-secondary"><i class="bi bi-printer"></i> In</button> <a asp-action="Index" class="btn btn-light">← Danh sách</a></div></div>
+<div class="card"><div class="card-body">
+    <p><b>Ngày:</b> @Model.NgayKiemKe.ToString("dd/MM/yyyy HH:mm") · <b>Người kiểm:</b> @Model.MaNvNavigation?.Ten @if (!string.IsNullOrEmpty(Model.GhiChu)) { <span>· <b>Ghi chú:</b> @Model.GhiChu</span> }</p>
+    <table class="table table-bordered"><thead><tr><th>Sản phẩm</th><th>Size / Màu</th><th class="text-end">Hệ thống</th><th class="text-end">Thực tế</th><th class="text-end">Chênh lệch</th></tr></thead><tbody>
+    @foreach (var c in Model.CtKiemKes)
+    { <tr class="@(c.ChenhLech != 0 ? "table-warning" : "")"><td>@c.MaBtNavigation?.MaMhNavigation?.Ten</td><td>@c.MaBtNavigation?.TenBienThe</td><td class="text-end">@c.SoLuongHeThong</td><td class="text-end">@c.SoLuongThucTe</td>
+        <td class="text-end fw-bold @(c.ChenhLech < 0 ? "text-danger" : c.ChenhLech > 0 ? "text-success" : "")">@(c.ChenhLech > 0 ? "+" : "")@c.ChenhLech</td></tr> }
+    </tbody></table>
+</div></div>

@@ -1,0 +1,12 @@
+@model ChamCong
+@{ ViewData["Title"] = "Sửa chấm công"; }
+<div class="page-title"><h1>Sửa chấm công: @Model.MaNvNavigation?.Ten – @Model.Ngay.ToString("dd/MM/yyyy")</h1><a asp-action="Index" class="btn btn-light">← Quay lại</a></div>
+<div class="card"><div class="card-body" style="max-width:520px">
+<div asp-validation-summary="All" class="text-danger"></div>
+<form method="post">
+    <div class="mb-3"><label class="form-label">Giờ vào</label><input type="time" name="gioVao" value="@Model.GioVao.ToString("HH:mm")" class="form-control" required /></div>
+    <div class="mb-3"><label class="form-label">Giờ ra</label><input type="time" name="gioRa" value="@(Model.GioRa?.ToString("HH:mm"))" class="form-control" /></div>
+    <div class="mb-3"><label class="form-label">Ghi chú</label><input name="ghiChu" value="@Model.GhiChu" maxlength="255" class="form-control" /></div>
+    <button class="btn btn-primary">Lưu</button>
+</form>
+</div></div>

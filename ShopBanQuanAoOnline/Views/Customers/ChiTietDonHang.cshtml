@@ -1,0 +1,55 @@
+@model DonHang
+@{
+    ViewData["Title"] = "Đơn DH" + Model.MaDh;
+    int? maHd = ViewBag.MaHd;
+    int[] buoc = { HangSo.TrangThaiDon.ChoXacNhan, HangSo.TrangThaiDon.DaXacNhan, HangSo.TrangThaiDon.DangGiao, HangSo.TrangThaiDon.HoanTat };
+    bool ketThucXau = Model.TrangThai is HangSo.TrangThaiDon.DaHuy or HangSo.TrangThaiDon.GiaoThatBai;
+}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h1 class="h4 fw-bold mb-0">Đơn hàng DH@Model.MaDh <span class="badge bg-@HangSo.TrangThaiDon.Mau(Model.TrangThai) fs-6 align-middle">@HangSo.TrangThaiDon.Ten(Model.TrangThai)</span></h1>
+    <a asp-action="DonHang" class="btn btn-link">← Đơn hàng của tôi</a>
+</div>
+<div class="khung mb-3">
+    @if (ketThucXau)
+    {
+        <p class="mb-0 text-@HangSo.TrangThaiDon.Mau(Model.TrangThai)"><i class="bi bi-x-circle"></i> Đơn hàng @HangSo.TrangThaiDon.Ten(Model.TrangThai).ToLower(). @Model.LyDo</p>
+    }
+    else
+    {
+        <div class="timeline">
+            @foreach (var b in buoc)
+            {
+                <span class="buoc @(Model.TrangThai >= b ? "xong" : "")">@HangSo.TrangThaiDon.Ten(b)</span>
+                @if (b != HangSo.TrangThaiDon.HoanTat) { <i class="bi bi-chevron-right text-muted"></i> }
+            }
+        </div>
+    }
+</div>
+<div class="row g-4">
+    <div class="col-lg-8"><div class="khung p-0"><table class="table align-middle mb-0">
+        <thead class="table-light"><tr><th>Sản phẩm</th><th class="text-end">Đơn giá</th><th class="text-end">SL</th><th class="text-end">Thành tiền</th></tr></thead><tbody>
+        @foreach (var c in Model.CtDonHangs)
+        { <tr><td><a asp-action="Details" asp-route-id="@c.MaBtNavigation?.MaMh">@c.MaBtNavigation?.MaMhNavigation?.Ten</a><br /><small class="text-muted">@c.MaBtNavigation?.TenBienThe</small></td>
+            <td class="text-end">@c.DonGia.ToString("N0")đ</td><td class="text-end">@c.SoLuong</td><td class="text-end">@c.ThanhTien.ToString("N0")đ</td></tr> }
+        </tbody><tfoot><tr><th colspan="3" class="text-end">Tổng thanh toán (COD)</th><th class="text-end gia">@Model.TongTien.ToString("N0")đ</th></tr></tfoot></table></div></div>
+    <div class="col-lg-4"><div class="khung small">
+        <p class="mb-1"><b>Ngày đặt:</b> @Model.NgayDat.ToString("dd/MM/yyyy HH:mm")</p>
+        <p class="mb-1"><b>Người nhận:</b> @Model.HoTenNhan – @Model.DienThoaiNhan</p>
+        <p class="mb-1"><b>Địa chỉ:</b> @Model.DiaChiNhan</p>
+        @if (!string.IsNullOrEmpty(Model.GhiChu)) { <p class="mb-1"><b>Ghi chú:</b> @Model.GhiChu</p> }
+        <p class="mb-3"><b>Thanh toán:</b> COD – @HangSo.ThanhToan.Ten(Model.ThanhToan)</p>
+        @if (maHd.HasValue) { <div class="d-grid mb-2"><a asp-action="HoaDon" asp-route-id="@maHd" class="btn btn-outline-dark"><i class="bi bi-receipt"></i> Xem hóa đơn HD@maHd</a></div> }
+        @if (Model.TrangThai == HangSo.TrangThaiDon.ChoXacNhan)
+        {
+            <form asp-action="HuyDonHang" method="post" data-confirm="Bạn chắc chắn muốn hủy đơn DH@Model.MaDh?">
+                <input type="hidden" name="id" value="@Model.MaDh" />
+                <input name="lyDo" class="form-control form-control-sm mb-2" maxlength="200" placeholder="Lý do hủy (không bắt buộc)" />
+                <div class="d-grid"><button class="btn btn-outline-danger">Hủy đơn hàng</button></div>
+            </form>
+        }
+        else if (!ketThucXau && Model.TrangThai != HangSo.TrangThaiDon.HoanTat)
+        {
+            <p class="text-muted mb-0">Đơn đã được cửa hàng xác nhận nên không thể tự hủy. Vui lòng liên hệ cửa hàng nếu cần hỗ trợ.</p>
+        }
+    </div></div>
+</div>

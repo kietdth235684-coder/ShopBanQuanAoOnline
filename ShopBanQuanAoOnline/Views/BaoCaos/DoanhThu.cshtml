@@ -1,0 +1,38 @@
+@model BaoCaoDoanhThuVM
+@{ ViewData["Title"] = "Báo cáo doanh thu"; var t = Model.Tong; long max = Model.Dong.Count > 0 ? Math.Max(1, Model.Dong.Max(x => x.DoanhThu)) : 1; }
+<div class="page-title"><h1>Doanh thu &amp; lợi nhuận ước tính</h1><button onclick="window.print()" class="btn btn-outline-secondary no-print"><i class="bi bi-printer"></i> In</button></div>
+<div class="card mb-3 no-print"><div class="card-body"><form method="get" class="row g-2 align-items-end">
+    <div class="col-auto"><label class="form-label">Thống kê theo</label><select name="kieu" class="form-select">
+        <option value="ngay" selected="@(Model.Kieu == "ngay")">Ngày</option><option value="thang" selected="@(Model.Kieu == "thang")">Tháng</option><option value="nam" selected="@(Model.Kieu == "nam")">Năm</option></select></div>
+    <div class="col-auto"><label class="form-label">Từ ngày</label><input type="date" name="tuNgay" value="@Model.TuNgay.ToString("yyyy-MM-dd")" class="form-control" /></div>
+    <div class="col-auto"><label class="form-label">Đến ngày</label><input type="date" name="denNgay" value="@Model.DenNgay.ToString("yyyy-MM-dd")" class="form-control" /></div>
+    <div class="col-auto"><button class="btn btn-primary">Xem báo cáo</button></div>
+</form></div></div>
+
+<div class="row">
+    <div class="col-6 col-xl-3 mb-3"><div class="card stat-card"><div class="card-body"><div class="nhan">Doanh thu (hóa đơn hoàn tất)</div><div class="so text-primary">@t.DoanhThu.ToString("N0")</div><div class="small text-muted">@t.SoHoaDon hóa đơn</div></div></div></div>
+    <div class="col-6 col-xl-3 mb-3"><div class="card stat-card"><div class="card-body"><div class="nhan">Hoàn tiền đổi trả</div><div class="so text-danger">@t.HoanTra.ToString("N0")</div><div class="small text-muted">Doanh thu thuần: @t.DoanhThuThuan.ToString("N0")</div></div></div></div>
+    <div class="col-6 col-xl-3 mb-3"><div class="card stat-card"><div class="card-body"><div class="nhan">Giá vốn hàng bán</div><div class="so">@t.GiaVon.ToString("N0")</div><div class="small text-muted">theo giá nhập tại thời điểm bán</div></div></div></div>
+    <div class="col-6 col-xl-3 mb-3"><div class="card stat-card"><div class="card-body"><div class="nhan">Lợi nhuận ước tính</div><div class="so text-success">@t.LoiNhuanUocTinh.ToString("N0")</div><div class="small text-muted">Tại quầy @t.DoanhThuTaiQuay.ToString("N0") · COD @t.DoanhThuCod.ToString("N0")</div></div></div></div>
+</div>
+
+<div class="alert alert-light border small">
+    <b>Quy tắc:</b> chỉ cộng hóa đơn đã hoàn tất (bán tại quầy đã thanh toán; đơn COD đã giao thành công và đã thu tiền). Đơn COD chưa hoàn tất, đã hủy hoặc giao thất bại <b>không</b> tính.
+    Trong kỳ còn <b>@Model.SoDonCodChuaHoanTat</b> đơn COD đang xử lý (trị giá @Model.GiaTriCodChuaHoanTat.ToString("N0") đ) – chưa được ghi nhận doanh thu.
+    <br />Lợi nhuận ước tính = Doanh thu − Giá vốn − Tiền hoàn trả + Giá vốn hàng trả nhập lại kho − Giá vốn hàng xuất đổi.
+</div>
+
+<div class="card"><div class="table-responsive"><table class="table table-sm table-hover mb-0">
+<thead><tr><th>Kỳ</th><th class="text-end">Số HĐ</th><th class="text-end">Tại quầy</th><th class="text-end">COD</th><th class="text-end">Doanh thu</th><th class="text-end">Hoàn trả</th><th class="text-end">Giá vốn</th><th class="text-end">Lợi nhuận ƯT</th><th style="width:22%"></th></tr></thead>
+<tbody>
+@foreach (var d in Model.Dong)
+{
+    <tr><td>@d.Ky</td><td class="text-end">@d.SoHoaDon</td><td class="text-end">@d.DoanhThuTaiQuay.ToString("N0")</td><td class="text-end">@d.DoanhThuCod.ToString("N0")</td>
+        <td class="text-end fw-semibold">@d.DoanhThu.ToString("N0")</td><td class="text-end text-danger">@d.HoanTra.ToString("N0")</td><td class="text-end">@d.GiaVon.ToString("N0")</td>
+        <td class="text-end text-success">@d.LoiNhuanUocTinh.ToString("N0")</td>
+        <td><div class="progress" style="height:8px"><div class="progress-bar" style="width:@(d.DoanhThu * 100 / max)%"></div></div></td></tr>
+}
+@if (Model.Dong.Count == 0) { <tr><td colspan="9" class="text-center text-muted py-3">Không có hóa đơn hoàn tất trong kỳ.</td></tr> }
+</tbody>
+<tfoot><tr class="fw-bold"><td>Tổng</td><td class="text-end">@t.SoHoaDon</td><td class="text-end">@t.DoanhThuTaiQuay.ToString("N0")</td><td class="text-end">@t.DoanhThuCod.ToString("N0")</td><td class="text-end">@t.DoanhThu.ToString("N0")</td><td class="text-end">@t.HoanTra.ToString("N0")</td><td class="text-end">@t.GiaVon.ToString("N0")</td><td class="text-end">@t.LoiNhuanUocTinh.ToString("N0")</td><td></td></tr></tfoot>
+</table></div></div>

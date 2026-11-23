@@ -1,0 +1,7 @@
+@{ ViewData["Title"] = "Đổi trả"; }
+<div class="page-title"><h1>Lập phiếu đổi trả</h1><a asp-action="Index" class="btn btn-light">← Danh sách</a></div>
+<div class="card"><div class="card-body" style="max-width:520px">
+    <p>Đổi trả luôn gắn với một hóa đơn đã hoàn tất. Nhập số hóa đơn (in trên hóa đơn, vd: HD12 → nhập 12).</p>
+    <form method="get" class="d-flex gap-2"><input type="number" name="maHd" min="1" class="form-control" placeholder="Mã hóa đơn" required /><button class="btn btn-primary">Tiếp tục</button></form>
+    <p class="small mt-2"><a asp-controller="Hoadons" asp-action="Index">Tra cứu hóa đơn theo SĐT khách</a></p>
+</div></div>

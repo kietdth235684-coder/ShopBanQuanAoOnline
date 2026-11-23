@@ -1,0 +1,28 @@
+@model Hoadon
+@{ ViewData["Title"] = "Đổi trả HD" + Model.MaHd; var da = (Dictionary<int, int>)ViewBag.DaDoiTra; }
+<div class="page-title"><h1>Đổi trả cho hóa đơn HD@Model.MaHd</h1><a asp-controller="Hoadons" asp-action="Details" asp-route-id="@Model.MaHd" class="btn btn-light">← Hóa đơn</a></div>
+<p>Khách: <b>@(Model.MaKhNavigation?.Ten ?? "Khách lẻ")</b> · Ngày mua: @Model.Ngay?.ToString("dd/MM/yyyy") · Tổng: @Model.TongTien?.ToString("N0") đ</p>
+<form asp-action="Create" method="post" data-confirm="Lập phiếu đổi trả và điều chỉnh tồn kho?">
+<input type="hidden" name="maHd" value="@Model.MaHd" />
+<div class="card"><div class="table-responsive"><table class="table align-middle mb-0">
+<thead><tr><th>Sản phẩm</th><th>Đã mua</th><th>Còn đổi/trả được</th><th style="width:110px">Số lượng</th><th style="width:150px">Hình thức</th><th style="width:200px">Đổi sang (nếu đổi)</th><th>Hàng còn bán được → nhập lại kho</th></tr></thead><tbody>
+@foreach (var c in Model.Cthoadons)
+{
+    int con = (c.SoLuong ?? 0) - da.GetValueOrDefault(c.MaCthd);
+    <tr>
+        <td>@c.MaMhNavigation?.Ten<br /><small class="text-muted">@c.MaBtNavigation?.TenBienThe · @c.DonGia?.ToString("N0") đ</small></td>
+        <td>@c.SoLuong</td><td>@con</td>
+        <td><input type="hidden" name="maCthd" value="@c.MaCthd" /><input type="number" name="soLuong" min="0" max="@con" value="0" class="form-control form-control-sm" readonly="@(con <= 0)" /></td>
+        <td><select name="hinhThuc" class="form-select form-select-sm"><option value="TRA">Trả hàng (hoàn tiền)</option><option value="DOI">Đổi size/màu</option></select></td>
+        <td><select name="maBtDoi" class="form-select form-select-sm"><option value="">--</option>
+            @foreach (var b in c.MaMhNavigation!.BienThes.Where(b => b.TrangThai)) { <option value="@b.MaBt">@b.TenBienThe (tồn @b.SoLuongTon)</option> }</select></td>
+        <td><input type="checkbox" name="nhapLai" value="@c.MaCthd" checked class="form-check-input" /></td>
+    </tr>
+}
+</tbody></table></div>
+<div class="card-body border-top">
+    <div class="mb-3" style="max-width:600px"><label class="form-label">Lý do đổi trả</label><input name="lyDo" maxlength="255" class="form-control" required placeholder="VD: khách đổi size, sản phẩm lỗi đường may..." /></div>
+    <p class="small text-muted">Trả hàng: hoàn lại tiền theo đơn giá trên hóa đơn. Đổi: đổi sang size/màu khác cùng sản phẩm, không hoàn tiền, trừ tồn biến thể mới. Bỏ chọn "nhập lại kho" nếu hàng nhận lại bị lỗi (không bán lại được).</p>
+    <button class="btn btn-warning"><i class="bi bi-arrow-left-right"></i> Lập phiếu đổi trả</button>
+</div></div>
+</form>

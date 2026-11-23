@@ -1,0 +1,76 @@
+@model DonHang
+@{
+    ViewData["Title"] = "DH" + Model.MaDh;
+    int? maHd = ViewBag.MaHd;
+    int[] buoc = { HangSo.TrangThaiDon.ChoXacNhan, HangSo.TrangThaiDon.DaXacNhan, HangSo.TrangThaiDon.DangGiao, HangSo.TrangThaiDon.HoanTat };
+}
+<div class="page-title"><h1>Đơn hàng DH@Model.MaDh <span class="badge bg-@HangSo.TrangThaiDon.Mau(Model.TrangThai) fs-6 align-middle">@HangSo.TrangThaiDon.Ten(Model.TrangThai)</span></h1>
+    <a asp-action="Index" class="btn btn-light">← Danh sách đơn</a></div>
+
+<div class="card mb-3"><div class="card-body">
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+        @foreach (var b in buoc)
+        {
+            bool xong = Model.TrangThai == b || (Model.TrangThai is >= 0 and <= 3 && Model.TrangThai > b);
+            <span class="badge rounded-pill @(xong ? "bg-success" : "bg-light text-muted border") px-3 py-2">@HangSo.TrangThaiDon.Ten(b)</span>
+            @if (b != HangSo.TrangThaiDon.HoanTat) { <i class="bi bi-chevron-right text-muted"></i> }
+        }
+        @if (Model.TrangThai is HangSo.TrangThaiDon.DaHuy or HangSo.TrangThaiDon.GiaoThatBai)
+        { <span class="badge bg-@HangSo.TrangThaiDon.Mau(Model.TrangThai) px-3 py-2 ms-3">@HangSo.TrangThaiDon.Ten(Model.TrangThai)</span> }
+    </div>
+</div></div>
+
+<div class="row">
+<div class="col-lg-8 mb-3"><div class="card"><div class="card-body">
+    <table class="table"><thead><tr><th>Sản phẩm</th><th>Size / Màu</th><th class="text-end">Đơn giá</th><th class="text-end">SL</th><th class="text-end">Tồn hiện tại</th><th class="text-end">Thành tiền</th></tr></thead><tbody>
+    @foreach (var c in Model.CtDonHangs)
+    {
+        bool thieu = Model.TrangThai == HangSo.TrangThaiDon.ChoXacNhan && (c.MaBtNavigation?.SoLuongTon ?? 0) < c.SoLuong;
+        <tr class="@(thieu ? "table-danger" : "")"><td>@c.MaBtNavigation?.MaMhNavigation?.Ten</td><td>@c.MaBtNavigation?.TenBienThe</td><td class="text-end">@c.DonGia.ToString("N0")</td><td class="text-end">@c.SoLuong</td>
+            <td class="text-end">@c.MaBtNavigation?.SoLuongTon @if (thieu) { <span class="badge bg-danger">thiếu</span> }</td><td class="text-end">@c.ThanhTien.ToString("N0")</td></tr>
+    }
+    </tbody><tfoot><tr><th colspan="5" class="text-end">Tổng tiền thu khi giao (COD)</th><th class="text-end text-danger">@Model.TongTien.ToString("N0") đ</th></tr></tfoot></table>
+</div></div></div>
+<div class="col-lg-4 mb-3">
+    <div class="card mb-3"><div class="card-body small">
+        <p class="mb-1"><b>Khách hàng:</b> @Model.MaKhNavigation?.Ten (@Model.MaKhNavigation?.Email)</p>
+        <p class="mb-1"><b>Người nhận:</b> @Model.HoTenNhan – @Model.DienThoaiNhan</p>
+        <p class="mb-1"><b>Địa chỉ:</b> @Model.DiaChiNhan</p>
+        @if (!string.IsNullOrEmpty(Model.GhiChu)) { <p class="mb-1"><b>Ghi chú của khách:</b> @Model.GhiChu</p> }
+        <p class="mb-1"><b>Ngày đặt:</b> @Model.NgayDat.ToString("dd/MM/yyyy HH:mm")</p>
+        <p class="mb-1"><b>Thanh toán:</b> COD – @HangSo.ThanhToan.Ten(Model.ThanhToan)</p>
+        @if (Model.NgayCapNhat.HasValue) { <p class="mb-1"><b>Cập nhật:</b> @Model.NgayCapNhat?.ToString("dd/MM/yyyy HH:mm") bởi @Model.MaNvNavigation?.Ten</p> }
+        @if (!string.IsNullOrEmpty(Model.LyDo)) { <p class="mb-1"><b>Lý do:</b> @Model.LyDo</p> }
+        @if (maHd.HasValue) { <p class="mb-0"><b>Hóa đơn:</b> <a asp-controller="Hoadons" asp-action="Details" asp-route-id="@maHd">HD@maHd</a></p> }
+    </div></div>
+    <div class="card"><div class="card-header"><h5 class="card-title mb-0">Xử lý đơn</h5></div><div class="card-body d-grid gap-2">
+        @switch (Model.TrangThai)
+        {
+            case HangSo.TrangThaiDon.ChoXacNhan:
+                <form asp-action="XacNhan" asp-route-id="@Model.MaDh" method="post" class="d-grid" data-confirm="Xác nhận đơn? Hệ thống sẽ kiểm tra và trừ tồn kho.">
+                    <button class="btn btn-primary"><i class="bi bi-check2"></i> Xác nhận đơn (trừ kho)</button></form>
+                break;
+            case HangSo.TrangThaiDon.DaXacNhan:
+                <form asp-action="GiaoHang" asp-route-id="@Model.MaDh" method="post" class="d-grid"><button class="btn btn-primary"><i class="bi bi-truck"></i> Bắt đầu giao hàng</button></form>
+                break;
+            case HangSo.TrangThaiDon.DangGiao:
+                <form asp-action="GiaoThanhCong" asp-route-id="@Model.MaDh" method="post" class="d-grid" data-confirm="Xác nhận đã giao thành công VÀ đã thu đủ @Model.TongTien.ToString("N0") đ? Hệ thống sẽ tạo hóa đơn.">
+                    <button class="btn btn-success"><i class="bi bi-cash-stack"></i> Giao thành công & đã thu tiền</button></form>
+                <form asp-action="GiaoThatBai" asp-route-id="@Model.MaDh" method="post" data-confirm="Ghi nhận giao thất bại? Hàng sẽ được hoàn về kho.">
+                    <input name="lyDo" class="form-control form-control-sm mb-1" placeholder="Lý do (khách không nhận, sai địa chỉ...)" maxlength="200" />
+                    <div class="d-grid"><button class="btn btn-outline-danger"><i class="bi bi-x-octagon"></i> Giao thất bại</button></div></form>
+                break;
+            default:
+                <p class="text-muted mb-0">Đơn đã kết thúc, không còn thao tác.</p>
+                break;
+        }
+        @if (Model.TrangThai is HangSo.TrangThaiDon.ChoXacNhan or HangSo.TrangThaiDon.DaXacNhan)
+        {
+            <hr class="my-1" />
+            <form asp-action="Huy" asp-route-id="@Model.MaDh" method="post" data-confirm="Hủy đơn hàng này?">
+                <input name="lyDo" class="form-control form-control-sm mb-1" placeholder="Lý do hủy" maxlength="200" />
+                <div class="d-grid"><button class="btn btn-outline-secondary">Hủy đơn</button></div></form>
+        }
+    </div></div>
+</div>
+</div>

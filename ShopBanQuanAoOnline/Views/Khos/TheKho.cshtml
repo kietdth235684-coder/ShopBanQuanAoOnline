@@ -1,0 +1,10 @@
+@model List<TheKho>
+@{ var bt = (BienThe)ViewBag.BienThe; ViewData["Title"] = "Thẻ kho"; }
+<div class="page-title"><h1>Thẻ kho: @bt.MaMhNavigation?.Ten – @bt.TenBienThe</h1><a asp-action="Index" class="btn btn-light">← Tồn kho</a></div>
+<p>Tồn hiện tại: <b>@bt.SoLuongTon</b></p>
+<div class="card"><div class="table-responsive"><table class="table table-sm table-hover mb-0">
+<thead><tr><th>Thời gian</th><th>Nghiệp vụ</th><th>Chứng từ</th><th class="text-end">Thay đổi</th><th class="text-end">Tồn sau</th><th>Người thực hiện</th></tr></thead><tbody>
+@foreach (var t in Model)
+{ <tr><td>@t.Ngay.ToString("dd/MM/yyyy HH:mm")</td><td>@HangSo.LoaiTheKho.Ten(t.Loai)</td><td>@t.ChungTu</td>
+    <td class="text-end fw-bold @(t.SoLuong < 0 ? "text-danger" : "text-success")">@(t.SoLuong > 0 ? "+" : "")@t.SoLuong</td><td class="text-end">@t.TonSau</td><td>@t.MaNvNavigation?.Ten</td></tr> }
+</tbody></table></div></div>

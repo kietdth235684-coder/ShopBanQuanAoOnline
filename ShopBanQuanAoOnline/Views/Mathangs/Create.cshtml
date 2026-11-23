@@ -1,0 +1,15 @@
+@model Mathang
+@{ ViewData["Title"] = "Thêm sản phẩm"; }
+<div class="page-title"><h1>Thêm sản phẩm</h1><a asp-action="Index" class="btn btn-light">← Danh sách</a></div>
+<div class="card"><div class="card-body">
+<form asp-action="Create" enctype="multipart/form-data" method="post">
+    <partial name="_Form" model="Model" />
+    <h5 class="mt-2">Biến thể size / màu ban đầu</h5>
+    <div class="row">
+        <div class="col-md-6 mb-3"><label class="form-label">Các kích cỡ (cách nhau dấu phẩy)</label><input name="kichCos" value="@ViewBag.kichCos" class="form-control" placeholder="S, M, L, XL" /></div>
+        <div class="col-md-6 mb-3"><label class="form-label">Các màu (cách nhau dấu phẩy)</label><input name="mauSacs" value="@ViewBag.mauSacs" class="form-control" placeholder="Đen, Trắng" /></div>
+    </div>
+    <p class="small text-muted">Hệ thống tạo mọi tổ hợp size × màu với tồn kho = 0. Có thể thêm/bớt biến thể ở trang chi tiết; tồn kho được nhập qua <b>Phiếu nhập</b>.</p>
+    <button class="btn btn-primary"><i class="bi bi-save"></i> Lưu sản phẩm</button>
+</form>
+</div></div>
