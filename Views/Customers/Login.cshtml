@@ -1,7 +1,8 @@
 @{ ViewData["Title"] = "Đăng nhập"; }
 <div class="row justify-content-center"><div class="col-md-6 col-lg-4">
     <div class="khung shadow-sm">
-        <h1 class="h4 fw-bold text-center mb-3">Đăng nhập</h1>
+        <h1 class="h4 fw-bold text-center mb-1">Đăng nhập</h1>
+        <p class="text-center text-muted small mb-3">Dành cho khách hàng, nhân viên và chủ cửa hàng</p>
         @if (ViewBag.LoiDangNhap != null) { <div class="alert alert-danger py-2">@ViewBag.LoiDangNhap</div> }
         <form method="post" asp-action="Login">
             <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
