@@ -32,7 +32,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(o =>
     {
         o.Cookie.Name = "MikaAdmin";
-        o.LoginPath = "/TaiKhoan/DangNhap";
+        o.LoginPath = "/Customers/Login"; // trang đăng nhập DUY NHẤT cho khách hàng, nhân viên và chủ cửa hàng
         o.LogoutPath = "/TaiKhoan/DangXuat";
         o.AccessDeniedPath = "/TaiKhoan/TuChoi";
         o.ExpireTimeSpan = TimeSpan.FromHours(8);
